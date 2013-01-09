@@ -1,0 +1,11 @@
+Package: VPRMModel
+Type: Package
+Title: R implementation of VPRM
+Version: 1.0
+Date: 2008-08-13
+Author: Timothy W. Hilton
+Maintainer: Timothy W. Hilton <hilton@meteo.psu.edu>
+Description: Provides an R implementation of Harvard University's Vegetation Photosynthesis and Respiration Model (VPRM).  VPRM is described in detail in Mahadevan, et al., 2008.  "A satellite-based biosphere parameterization for net ecosystem CO2 exchange: Vegetation Photosynthesis and Respiration Model (VPRM)".  Global Biogeochemical Cycles, 22, p. GB2005.
+License: GPL-3
+LazyLoad: yes
+Depends: zoo
