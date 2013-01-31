@@ -173,6 +173,28 @@ NEE_sin <- function(tower, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL,
   return(NEE)
 }
 
+NEE_SWC <- function(tower, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL,
+                    c_swc_gee=NULL, c_swc_re=NULL) {
+
+  #if parameters not provided in function call, get them from the
+  #   tower data frame
+  if (is.null(lambda)) lambda <- tower$lambda
+  if (is.null(alpha))  alpha  <- tower$alpha
+  if (is.null(beta))   beta   <- tower$beta
+  if (is.null(PAR_0))  PAR_0  <- tower$PAR_0
+  if (is.null(c_swc_gee)) c_swc_gee <- tower$c_swc_gee
+  if (is.null(c_swc_re)) c_swc_re <- tower$c_swc_re
+
+  GEE <-  (-1.0) * lambda * tower[, "Tscale"] * tower[, "Pscale"] *
+    tower[, "Wscale"] * (1 / (1 + (tower[, "PAR"]/PAR_0))) *
+      tower[, "EVI"] * tower[, "PAR"] * c_swc_gee * tower[, "SWC" ]
+  
+  R <- ( alpha * tower[, "Tresp"] + beta ) * c_swc_re * tower[, "SWC" ] 
+
+  NEE <- GEE + R
+  return(NEE)
+}
+
 #==============================================================
 
 getGEE <- function(tow, par) {
