@@ -13,13 +13,15 @@
 #
 #twhilton, PSU, Dec 2007
 
-getTscale <- function(T, Tmax, Tmin, Topt) {
-  
+getTscale <- function (T, Tmax, Tmin, Topt) 
+{
   numer <- (T - Tmin) * (T - Tmax)
   denom <- ((T - Tmin) * (T - Tmax)) - (T - Topt)^2
-
-  Tscale = numer / denom
-  Tscale[which(Tscale < Tmin)] <- Tmin
+  Tscale = numer/denom
+  Tscale[which(T < Tmin)] <- 0
+  Tscale[which(T > Tmax)] <- 0
+  Tscale[ Tscale < 0 ] <- 0
+  Tscale[ Tscale > 1 ] <- 1
   return(Tscale)
 }
 
