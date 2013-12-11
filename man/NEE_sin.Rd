@@ -1,72 +1,65 @@
 \name{NEE_sin}
 \alias{NEE_sin}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
-\description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{VPRM NEE with added daily and annual cycles}
 \usage{
-NEE_sin(tower, lambda = NULL, alpha = NULL, beta = NULL, PAR_0 = NULL, a = NULL, b = NULL, c = NULL, d = NULL)
+  NEE_sin(tower, lambda = NULL, alpha = NULL, beta = NULL,
+    PAR_0 = NULL, a = NULL, b = NULL, c = NULL, d = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{tower}{ ~~Describe \code{tower} here~~ }
-  \item{lambda}{ ~~Describe \code{lambda} here~~ }
-  \item{alpha}{ ~~Describe \code{alpha} here~~ }
-  \item{beta}{ ~~Describe \code{beta} here~~ }
-  \item{PAR_0}{ ~~Describe \code{PAR_0} here~~ }
-  \item{a}{ ~~Describe \code{a} here~~ }
-  \item{b}{ ~~Describe \code{b} here~~ }
-  \item{c}{ ~~Describe \code{c} here~~ }
-  \item{d}{ ~~Describe \code{d} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{a}{amplitude for annual cycle sinusoid [umol m-2
+  s-1]}
+
+  \item{b}{offset for annual cycle sinusoid, [days]}
+
+  \item{c}{amplitude for daily cycle sinusoid [umol m-2
+  s-1]}
+
+  \item{d}{offset for daily cycle sinusoid, [hours]}
+
+  \item{tower}{data frame containing (at least) variables
+  Tscale, Pscale, Wscale, EVI, PAR, Tresp.}
+
+  \item{lambda}{numeric; VPRM parameter: maximum light use
+  efficiency}
+
+  \item{alpha}{numeric; VPRM parameter (slope of
+  respiration with respect to temperature)}
+
+  \item{beta}{numeric; VPRM parameter (basal respiration
+  rate)}
+
+  \item{PAR_0}{numeric; VPRM parameter (LUE half-saturation
+  value)}
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+  vector of same length as number of rows in tower
+  containin VPRM NEE \[umol m-2 s-1\]
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\description{
+  Similar to NEE, but adds a sinusoidal daily and annual
+  cycle to VPRM structure.  That is, NEE_sin calculates
+  VPRM NEE + VPRM R + yr_cycle + daily_cycle.  This is a
+  simple method to get VPRM to focus on NEE anomalies
+  rather than NEE.
+}
+\details{
+  The annual cycle is in the form a * sin( DOY-b ), where
+  DOY is day of year and a and b are parameters to adjust
+  the amplitude and seasonal timing, respectively.  The
+  daily cycle is in the form c * sin( hr-d ), where hr is
+  hour of the day and c and d are parameters to adjust the
+  amplitude and daily timing, respectively.
+}
+\author{
+  Timothy W. Hilton
+}
+\references{
+  Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
+  A., Lin, J., Gerbig, C., Munger, J., Chow, V., and
+  Gottlieb, E.: A satellite-based biosphere
+  parameterization for net ecosystem CO2 exchange:
+  Vegetation Photosynthesis and Respira- tion Model (VPRM),
+  Global Biogeochem. Cy., 22, GB2005,
+  doi:10.1029/2006GB002735, 2008.
+}
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (tower, lambda = NULL, alpha = NULL, beta = NULL, PAR_0 = NULL, 
-    a = NULL, b = NULL, c = NULL, d = NULL) 
-{
-    if (is.null(lambda)) 
-        lambda <- tower$lambda
-    if (is.null(alpha)) 
-        alpha <- tower$alpha
-    if (is.null(beta)) 
-        beta <- tower$beta
-    if (is.null(PAR_0)) 
-        PAR_0 <- tower$PAR_0
-    doy <- as.integer(format(as.POSIXlt(tower$date), format = "\%j"))
-    hr <- hours(tower$date)
-    GEE <- (-1) * lambda * tower[, "Tscale"] * tower[, "Pscale"] * 
-        tower[, "Wscale"] * (1/(1 + (tower[, "PAR"]/PAR_0))) * 
-        tower[, "EVI"] * tower[, "PAR"]
-    R <- alpha * tower[, "Tresp"] + beta
-    yr.cycle <- a * sin((doy - b) * pi/365)
-    day.cycle <- c * sin((hr - d) * pi/24)
-    NEE <- GEE + R + yr.cycle + day.cycle
-    return(NEE)
-  }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

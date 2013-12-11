@@ -1,8 +1,8 @@
-\name{NEE}
-\alias{NEE}
-\title{calculate VPRM NEE}
+\name{GEE}
+\alias{GEE}
+\title{calculate VPRM GEE}
 \usage{
-  NEE(tower, lambda = NULL, alpha = NULL, beta = NULL,
+  GEE(tower, lambda = NULL, alpha = NULL, beta = NULL,
     PAR_0 = NULL)
 }
 \arguments{
@@ -23,16 +23,11 @@
 }
 \value{
   vector of same length as number of rows in tower
-  containin VPRM NEE \[umol m-2 s-1\]
+  containin VPRM GEE \[umol m-2 s-1\]
 }
 \description{
-  calculates VPRM net ecosystem exchange (NEE) according to
-  eqn 12 in Mahadevan et al, 2007
-}
-\details{
-  Arguments lambda, alpha, beta, and PAR\_0 may be omitted
-  from the function call.  In this case they must be
-  present as variables in data frame tower.
+  calculate VPRM GEE according to Mahadevan et al (2008)
+  eq. 4
 }
 \author{
   Timothy W. Hilton

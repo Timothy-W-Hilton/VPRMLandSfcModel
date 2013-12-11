@@ -1,48 +1,32 @@
 \name{getWscale}
 \alias{getWscale}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
-\description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{calculate Wscale}
 \usage{
-getWscale(LSWI, LSWI_max)
+  getWscale(LSWI, LSWI_max)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{LSWI}{ ~~Describe \code{LSWI} here~~ }
-  \item{LSWI_max}{ ~~Describe \code{LSWI_max} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{LSWI}{land surface water index}
+
+  \item{LSWI_max}{maximum LSWI for site}
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+  Pscale term in VPRM equation (eqn 12 in Mahadevan et al,
+  2007)
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\description{
+  calculates Wscale according to eqn 8 in Mahadevan et al,
+  2007
+}
+\author{
+  Timothy W. Hilton
+}
+\references{
+  Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
+  A., Lin, J., Gerbig, C., Munger, J., Chow, V., and
+  Gottlieb, E.: A satellite-based biosphere
+  parameterization for net ecosystem CO2 exchange:
+  Vegetation Photosynthesis and Respira- tion Model (VPRM),
+  Global Biogeochem. Cy., 22, GB2005,
+  doi:10.1029/2006GB002735, 2008.
+}
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (LSWI, LSWI_max) 
-{
-    Wscale <- (1 + LSWI)/(1 + LSWI_max)
-    return(Wscale)
-  }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

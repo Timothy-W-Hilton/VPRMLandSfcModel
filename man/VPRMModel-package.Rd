@@ -6,9 +6,9 @@
 R implementation of VPRM
 }
 \description{
-Provides an R implementation of Harvard University's Vegetation
-Photosynthesis and Respiration Model (VPRM).  See references (below) for
-a detailed description of VPRM.
+Provides an R implementation of the Vegetation Photosynthesis and
+Respiration Model (VPRM).  See references (below) for a detailed
+description of VPRM.
 }
 \details{
 \tabular{ll}{
@@ -25,12 +25,10 @@ the VPRM model.
 \author{
 Timothy W. Hilton
 
-Maintainer: Timothy W. Hilton <hilton@meteo.psu.edu>
+Maintainer: Timothy W. Hilton <thilton@ucmerced.edu>
 }
 \references{
 Mahadevan, P., Wofsy, S.C., Matross, D.M., Xiao, X., Dunn, A.L., Lin, J.C., Gerbig, C., Munger, J.W., Chow, V.Y., and Gottlieb, E.W., 2008. A satellite-based biosphere parameterization for net ecosystem CO2  exchange: Vegetation photosynthesis and respiration model (VPRM). Global Biogeochemical Cycles, 22, GB2005. doi:10.1029/2006GB002735.
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
-~~ the R documentation directory ~~
 \keyword{ package }
 

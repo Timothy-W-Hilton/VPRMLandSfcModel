@@ -1,48 +1,45 @@
 \name{getLSWI}
 \alias{getLSWI}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
-\description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{calculate LSWI}
 \usage{
-getLSWI(rho_nir, rho_swir)
+  getLSWI(rho_nir, rho_swir)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{rho_nir}{ ~~Describe \code{rho_nir} here~~ }
-  \item{rho_swir}{ ~~Describe \code{rho_swir} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{rho_nir}{numeric vector; near-infrared (841-876 nm)
+  band satellite-derived reflectance}
+
+  \item{rho_swir}{numeric vector; 1628-1652 nm band
+  satellite-derived reflectance}
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
+  LSWI: numeric vector same size as rho_nir and rho_swir
+  containing LSWI values.
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\description{
+  calculates land surface water index (LSWI) according to
+  eqn 3 in Mahadevan et al, 2007.
+}
+\details{
+  LSWI may range from -1 to 1 (Xiao et al 2004).
+}
+\author{
+  Timothy W. Hilton
+}
+\references{
+  Xiangming Xiao, Qingyuan Zhang, Bobby Braswell, Shawn
+  Urbanski, Stephen Boles, Steven Wofsy, Berrien Moore III,
+  Dennis Ojima, Modeling gross primary production of
+  temperate deciduous broadleaf forest using satellite
+  images and climate data, Remote Sensing of Environment,
+  Volume 91, Issue 2, 30 May 2004, Pages 256-270, ISSN
+  0034-4257, 10.1016/j.rse.2004.03.010.
 
- ~Make other sections like Warning with \section{Warning }{....} ~
+  Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
+  A., Lin, J., Gerbig, C., Munger, J., Chow, V., and
+  Gottlieb, E.: A satellite-based biosphere
+  parameterization for net ecosystem CO2 exchange:
+  Vegetation Photosynthesis and Respira- tion Model (VPRM),
+  Global Biogeochem. Cy., 22, GB2005,
+  doi:10.1029/2006GB002735, 2008.
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
 
-## The function is currently defined as
-function (rho_nir, rho_swir) 
-{
-    LSWI <- (rho_nir - rho_swir)/(rho_nir + rho_swir)
-    return(LSWI)
-  }
-}
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
