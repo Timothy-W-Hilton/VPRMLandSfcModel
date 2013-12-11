@@ -132,9 +132,15 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' calculates VPRM net ecosystem exchange (NEE) according to eqn 12
 ##' in Mahadevan et al, 2007
 ##'
-##' Arguments lambda, alpha, beta, and PAR\_0 may be omitted from the
+##' Arguments lambda, alpha, beta, and PAR_0 may be omitted from the
 ##' function call.  In this case they must be present as variables in
 ##' data frame tower.
+##'
+##' The Tresp variable in tower is the temperature used to calculate
+##' respiration.  Tresp should be max(Tair, Tlow), where Tair is the
+##' air temperature (deg C) and Tlow is the minimum air temperature
+##' (deg C) for respiration.  This is explained more fully in
+##' Mahadevan et al (2008) section 2.2.
 ##' @title calculate VPRM NEE
 ##' @param tower data frame containing (at least) variables Tscale,
 ##' Pscale, Wscale, EVI, PAR, Tresp.
@@ -171,90 +177,6 @@ NEE <- function(tower, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
   NEE <- GEE + R
   return(NEE)
 }
-##' Similar to NEE, but adds a sinusoidal daily and annual cycle to
-##' VPRM structure.  That is, NEE_sin calculates VPRM NEE + VPRM R +
-##' yr_cycle + daily_cycle.  This is a simple method to get VPRM to
-##' focus on NEE anomalies rather than NEE.
-##'
-##' The annual cycle is in the form a * sin( DOY-b ), where DOY is day
-##' of year and a and b are parameters to adjust the amplitude and
-##' seasonal timing, respectively.  The daily cycle is in the form c *
-##' sin( hr-d ), where hr is hour of the day and c and d are
-##' parameters to adjust the amplitude and daily timing, respectively.
-##' @title VPRM NEE with added daily and annual cycles
-##' @inheritParams NEE
-##' @param a amplitude for annual cycle sinusoid [umol m-2 s-1]
-##' @param b offset for annual cycle sinusoid, [days]
-##' @param c amplitude for daily cycle sinusoid [umol m-2 s-1]
-##' @param d offset for daily cycle sinusoid, [hours]
-##' @return vector of same length as number of rows in tower containin
-##' VPRM NEE \[umol m-2 s-1\]
-##' @author Timothy W. Hilton
-##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
-##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
-##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
-##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
-##' doi:10.1029/2006GB002735, 2008.
-##' @export 
-NEE_sin <- function(tower, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL,
-                    a=NULL, b=NULL, c=NULL, d=NULL) {
-
-  #if parameters not provided in function call, get them from the
-  #   tower data frame
-  if (is.null(lambda)) lambda <- tower$lambda
-  if (is.null(alpha))  alpha  <- tower$alpha
-  if (is.null(beta))   beta   <- tower$beta
-  if (is.null(PAR_0))  PAR_0  <- tower$PAR_0
-
-  doy <- as.integer(format(as.POSIXlt(tower$date), format="%j"))
-  hr <- hours(tower$date)
-  
-  GEE <-  (-1.0) * lambda * tower[, "Tscale"] * tower[, "Pscale"] *
-    tower[, "Wscale"] * (1 / (1 + (tower[, "PAR"]/PAR_0))) *
-      tower[, "EVI"] * tower[, "PAR"]
-  
-  R <- alpha * tower[, "Tresp"] + beta
-
-  yr.cycle <- a * sin( (doy-b) * pi/365)
-  day.cycle <- c * sin( (hr-d) * pi/24)
-  
-  NEE <- GEE + R + yr.cycle + day.cycle
-  return(NEE)
-}
-##' adjusts VPRM model structure to include soil water content (SWC)
-##' in NEE calculation.
-##'
-##' @title calculate VPRM NEE with soil water content added to VPRM structure 
-##' @inheritParams NEE
-##' @param c_swc_gee VPRM_SWC parameter; soil water content multiplier for GEE
-##' @param c_swc_re VPRM_SWC parameter; soil water content multiplier
-##' for respiration
-##' @return vector of same length as number of rows in tower
-##' containining NEE
-##' @author Timothy W. Hilton
-NEE_SWC <- function(tower, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL,
-                    c_swc_gee=NULL, c_swc_re=NULL) {
-
-  #if parameters not provided in function call, get them from the
-  #   tower data frame
-  if (is.null(lambda)) lambda <- tower$lambda
-  if (is.null(alpha))  alpha  <- tower$alpha
-  if (is.null(beta))   beta   <- tower$beta
-  if (is.null(PAR_0))  PAR_0  <- tower$PAR_0
-  if (is.null(c_swc_gee)) c_swc_gee <- tower$c_swc_gee
-  if (is.null(c_swc_re)) c_swc_re <- tower$c_swc_re
-
-  GEE <-  (-1.0) * lambda * tower[, "Tscale"] * tower[, "Pscale"] *
-    tower[, "Wscale"] * (1 / (1 + (tower[, "PAR"]/PAR_0))) *
-      tower[, "EVI"] * tower[, "PAR"] * c_swc_gee * tower[, "SWC" ]
-  
-  R <- ( alpha * tower[, "Tresp"] + beta ) * c_swc_re * tower[, "SWC" ] 
-
-  NEE <- GEE + R
-  return(NEE)
-}
-
 
 ##' calculate VPRM GEE according to Mahadevan et al (2008) eq. 4
 ##'
