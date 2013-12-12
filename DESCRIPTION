@@ -5,11 +5,12 @@ Version: 1.0
 Date: 2008-08-13
 Author: Timothy W. Hilton
 Maintainer: Timothy W. Hilton <hilton@meteo.psu.edu>
-Description: Provides an R implementation of Harvard University's Vegetation
-    Photosynthesis and Respiration Model (VPRM).  VPRM is described in detail
-    in Mahadevan, et al., 2008.  "A satellite-based biosphere parameterization
-    for net ecosystem CO2 exchange: Vegetation Photosynthesis and Respiration
-    Model (VPRM)".  Global Biogeochemical Cycles, 22, p. GB2005.
+Description: Provides an R implementation of the Vegetation Photosynthesis and
+    Respiration Model (VPRM).  VPRM is a simple light-use efficiency based
+    diagnostic land surface model.  VPRM diagnoses gross ecosystem exchange
+    (GEE) of carbon dioxide, ecosystem respiration (R), and net ecosystem
+    exchange (NEE) of carbon dioxide. The references provided by
+    "citation("VPRMModel")" provide a detailed description of VPRM.
 License: GPL-3
 LazyLoad: yes
 Depends:

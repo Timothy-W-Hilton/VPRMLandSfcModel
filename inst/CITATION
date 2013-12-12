@@ -1,0 +1,59 @@
+if(!exists("meta") || is.null(meta)) meta <- packageDescription("VPRMModel")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste("version", meta$Version)
+
+citHeader("To cite the R package 'VPRMModel' in publications use:")
+
+citEntry(entry = "article",
+  title        =  paste("Improving North American terrestrial CO2 flux",
+                        "diagnosis using spatial structure in land surface",
+                        "model residuals"),
+  author       = personList(as.person("T.W. Hilton"),
+                   as.person("K.J. Davis"),
+                   as.person("K. Keller"),
+                   as.person("N.M. Urban")),
+  journal      = "Biogeosciences",
+  year         = "2013",
+  volume       = "10",
+  pages        = "4607--4625",
+  url          = "http://www.biogeosciences.net/10/4607/2013/bg-10-4607-2013.html",
+  doi          = "10.5194/bg-10-4607-2013",
+  textVersion  = paste("  Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.:",
+        "Improving North American terrestrial CO2 flux diagnosis",
+        "using spatial structure in land surface model residuals,",
+        "Biogeosciences, 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013."),
+)
+
+citEntry(entry = "article",
+  title        = paste("A satellite-based biosphere parameterization",
+                       "for net ecosystem CO2 exchange: Vegetation",
+                       "photosynthesis and respiration model (VPRM)"),
+  author       = personList(as.person("P. Mahadevan"), 
+		as.person("S.C. Wofsy"), 
+		as.person("D.M. Matross"), 
+		as.person("X. Xiao"), 
+		as.person("A.L. Dunn"), 
+		as.person("J.C. Lin"), 
+		as.person("C. Gerbig"), 
+		as.person("J.W. Munger"), 
+		as.person("V.Y. Chow"), 
+		as.person("E.W. Gottlieb")),
+  journal      = "Global Biogeochemical Cycles",
+  year         = "2008",
+  volume       = "22",
+  pages        = "GB2005",
+  doi          = "10.1029/2006GB002735",
+  textVersion  =
+  paste("Mahadevan, P., Wofsy, S.C., Matross, D.M., Xiao, X., ",
+        "Dunn, A.L., Lin, J.C., Gerbig, C., Munger, J.W., Chow, V.Y.,",
+        "and Gottlieb, E.W., 2008. A satellite-based biosphere",
+        "parameterization for net ecosystem CO2 exchange: Vegetation",
+        "photosynthesis and respiration model (VPRM).",
+        "Global Biogeochemical Cycles, 22, GB2005. doi:10.1029/2006GB002735"),
+  header = paste("To cite the Vegetation Photosynthesis Respiration Model",
+      "itself in publications use:")
+)
+
+citFooter("BibTeX entries for LaTeX users: use\n", 
+sQuote('toBibtex(citation("VPRMModel"))'))
+

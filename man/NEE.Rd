@@ -30,9 +30,16 @@
   eqn 12 in Mahadevan et al, 2007
 }
 \details{
-  Arguments lambda, alpha, beta, and PAR\_0 may be omitted
+  Arguments lambda, alpha, beta, and PAR_0 may be omitted
   from the function call.  In this case they must be
   present as variables in data frame tower.
+
+  The Tresp variable in tower is the temperature used to
+  calculate respiration.  Tresp should be max(Tair, Tlow),
+  where Tair is the air temperature (deg C) and Tlow is the
+  minimum air temperature (deg C) for respiration.  This is
+  explained more fully in Mahadevan et al (2008) section
+  2.2.
 }
 \author{
   Timothy W. Hilton

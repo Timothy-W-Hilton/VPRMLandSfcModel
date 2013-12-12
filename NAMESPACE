@@ -1,6 +1,5 @@
 export(GEE)
 export(NEE)
-export(NEE_sin)
 export(getEVI)
 export(getLSWI)
 export(getPscale)
