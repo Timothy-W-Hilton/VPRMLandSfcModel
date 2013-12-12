@@ -7,19 +7,20 @@
 }
 \arguments{
   \item{tower}{data frame containing (at least) variables
-  Tscale, Pscale, Wscale, EVI, PAR, Tresp.}
+  Tscale, Pscale, Wscale, EVI, PAR, Tresp.  May also
+  contain lambda, alpha, beta, PAR_0.}
 
-  \item{lambda}{numeric; VPRM parameter: maximum light use
-  efficiency}
+  \item{lambda}{numeric, optional; VPRM parameter: maximum
+  light use efficiency.}
 
-  \item{alpha}{numeric; VPRM parameter (slope of
+  \item{alpha}{numeric, optional; VPRM parameter (slope of
   respiration with respect to temperature)}
 
-  \item{beta}{numeric; VPRM parameter (basal respiration
-  rate)}
+  \item{beta}{numeric, optional; VPRM parameter (basal
+  respiration rate)}
 
-  \item{PAR_0}{numeric; VPRM parameter (LUE half-saturation
-  value)}
+  \item{PAR_0}{numeric, optional; VPRM parameter (LUE
+  half-saturation value)}
 }
 \value{
   vector of same length as number of rows in tower
@@ -32,7 +33,14 @@
 \details{
   Arguments lambda, alpha, beta, and PAR_0 may be omitted
   from the function call.  In this case they must be
-  present as variables in data frame tower.
+  present as variables in data frame tower.  If any of
+  these four parameters are present in tower *and*
+  specified as parameters in the function call the function
+  parameter values will be used and the values in tower
+  will be ignored.  If specifed as function parameters
+  lambda, alpha, beta, and PAR_0 may be single values or
+  numeric vectors the same length as the number of
+  observations in tower.
 
   The Tresp variable in tower is the temperature used to
   calculate respiration.  Tresp should be max(Tair, Tlow),
@@ -49,7 +57,7 @@
   A., Lin, J., Gerbig, C., Munger, J., Chow, V., and
   Gottlieb, E.: A satellite-based biosphere
   parameterization for net ecosystem CO2 exchange:
-  Vegetation Photosynthesis and Respira- tion Model (VPRM),
+  Vegetation Photosynthesis and Respiration Model (VPRM),
   Global Biogeochem. Cy., 22, GB2005,
   doi:10.1029/2006GB002735, 2008.
 }

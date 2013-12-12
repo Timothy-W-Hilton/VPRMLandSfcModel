@@ -10,7 +10,7 @@
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
+##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
 ##' @author Timothy W. Hilton
@@ -29,17 +29,29 @@ getTscale <- function (T, Tmax, Tmin, Topt)
 
 ##' calculates Pscale according to eqn 7 in Mahadevan et al, 2007
 ##'
+##' The levels of phen are abbreviations: ginc - "onset greenness
+##' increase", gmin - "onset greenness minimum", gmax - "onset
+##' greenness maximum", gdec - "onset greenness decrease".  This
+##' phenology dynamics classification scheme is explained more fully
+##' in Zhang et al (2003).
 ##' @title calculate Pscale
-##' @param LSWI land surface water index
-##' @param phen MODIS phenology (factor with levels ginc, gmin, gmax, gdec)
+##' @param LSWI 1xN numeric vector; land surface water index
+##' @param phen 1xN factor vector; MODIS phenology (factor with levels
+##' ginc, gmin, gmax, gdec)
 ##' @return Pscale term in VPRM equation (eqn 12 in Mahadevan et al, 2008)
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
+##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
+##' @references Xiaoyang Zhang, Mark A. Friedl, Crystal B. Schaaf,
+##' Alan H. Strahler, John C.F. Hodges, Feng Gao, Bradley C. Reed,
+##' Alfredo Huete, Monitoring vegetation phenology using MODIS, Remote
+##' Sensing of Environment, Volume 84, Issue 3, March 2003, Pages
+##' 471-475, ISSN 0034-4257,
+##' http://dx.doi.org/10.1016/S0034-4257(02)00135-9.
 ##' @export 
 getPscale <- function( LSWI, phen ) {
   
@@ -52,14 +64,14 @@ getPscale <- function( LSWI, phen ) {
 ##' calculates Wscale according to eqn 8 in Mahadevan et al, 2007
 ##'
 ##' @title calculate Wscale
-##' @param LSWI land surface water index
-##' @param LSWI_max maximum LSWI for site
+##' @param LSWI numeric vector; land surface water index
+##' @param LSWI_max numeric; maximum LSWI for site (that is, a single value)
 ##' @return Pscale term in VPRM equation (eqn 12 in Mahadevan et al, 2007)
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
+##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
 ##' @export 
@@ -72,18 +84,19 @@ getWscale <- function(LSWI, LSWI_max) {
 ##' Mahadevan et al, 2007
 ##' 
 ##' @title calculate EVI
-##' @param rho_nir numeric vector; near-infrared (841-876 nm) band
+##' @param rho_nir 1xN numeric vector; near-infrared (841-876 nm) band
 ##' satellite-derived reflectance
-##' @param rho_red numeric vector; red band satellite-derived
+##' @param rho_red 1xN numeric vector; red band satellite-derived
 ##' reflectance
-##' @param rho_blue numeric vector; blue band satellite-derived
+##' @param rho_blue 1xN numeric vector; blue band satellite-derived
 ##' reflectance
-##' @return numeric; EVI term in VPRM equation (eqn 12 in Mahadevan et al, 2007)
+##' @return numeric; EVI term in VPRM equation (eqn 12 in Mahadevan et
+##' al, 2007)
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
+##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
 ##' @export 
@@ -105,8 +118,10 @@ getEVI <- function(rho_nir, rho_red, rho_blue) {
 ##' 
 ##' LSWI may range from -1 to 1 (Xiao et al 2004).
 ##' @title calculate LSWI
-##' @param rho_nir numeric vector; near-infrared (841-876 nm) band satellite-derived reflectance
-##' @param rho_swir  numeric vector; 1628-1652 nm band satellite-derived reflectance
+##' @param rho_nir 1xN numeric vector; near-infrared (841-876 nm) band
+##' satellite-derived reflectance
+##' @param rho_swir 1xN numeric vector; 1628-1652 nm band
+##' satellite-derived reflectance
 ##' @return LSWI: numeric vector same size as rho_nir and rho_swir
 ##' containing LSWI values.
 ##' @author Timothy W. Hilton
@@ -119,7 +134,7 @@ getEVI <- function(rho_nir, rho_red, rho_blue) {
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
+##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
 ##' @export 
@@ -134,7 +149,12 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##'
 ##' Arguments lambda, alpha, beta, and PAR_0 may be omitted from the
 ##' function call.  In this case they must be present as variables in
-##' data frame tower.
+##' data frame tower.  If any of these four parameters are present in
+##' tower *and* specified as parameters in the function call the
+##' function parameter values will be used and the values in tower
+##' will be ignored.  If specifed as function parameters lambda,
+##' alpha, beta, and PAR_0 may be single values or numeric vectors the
+##' same length as the number of observations in tower.
 ##'
 ##' The Tresp variable in tower is the temperature used to calculate
 ##' respiration.  Tresp should be max(Tair, Tlow), where Tair is the
@@ -143,19 +163,21 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' Mahadevan et al (2008) section 2.2.
 ##' @title calculate VPRM NEE
 ##' @param tower data frame containing (at least) variables Tscale,
-##' Pscale, Wscale, EVI, PAR, Tresp.
-##' @param lambda numeric; VPRM parameter: maximum light use efficiency 
-##' @param alpha numeric; VPRM parameter (slope of respiration with
+##' Pscale, Wscale, EVI, PAR, Tresp.  May also contain lambda, alpha,
+##' beta, PAR_0.
+##' @param lambda numeric, optional; VPRM parameter: maximum light use
+##' efficiency.  
+##' @param alpha numeric, optional; VPRM parameter (slope of respiration with
 ##' respect to temperature)
-##' @param beta numeric; VPRM parameter (basal respiration rate)
-##' @param PAR_0 numeric; VPRM parameter (LUE half-saturation value)
+##' @param beta numeric, optional; VPRM parameter (basal respiration rate)
+##' @param PAR_0 numeric, optional; VPRM parameter (LUE half-saturation value)
 ##' @return vector of same length as number of rows in tower containin
 ##' VPRM NEE \[umol m-2 s-1\]
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
+##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
 ##' @export 
@@ -188,7 +210,7 @@ NEE <- function(tower, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respira- tion Model
+##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008. 
 ##' @export 

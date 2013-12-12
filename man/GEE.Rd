@@ -7,19 +7,20 @@
 }
 \arguments{
   \item{tower}{data frame containing (at least) variables
-  Tscale, Pscale, Wscale, EVI, PAR, Tresp.}
+  Tscale, Pscale, Wscale, EVI, PAR, Tresp.  May also
+  contain lambda, alpha, beta, PAR_0.}
 
-  \item{lambda}{numeric; VPRM parameter: maximum light use
-  efficiency}
+  \item{lambda}{numeric, optional; VPRM parameter: maximum
+  light use efficiency.}
 
-  \item{alpha}{numeric; VPRM parameter (slope of
+  \item{alpha}{numeric, optional; VPRM parameter (slope of
   respiration with respect to temperature)}
 
-  \item{beta}{numeric; VPRM parameter (basal respiration
-  rate)}
+  \item{beta}{numeric, optional; VPRM parameter (basal
+  respiration rate)}
 
-  \item{PAR_0}{numeric; VPRM parameter (LUE half-saturation
-  value)}
+  \item{PAR_0}{numeric, optional; VPRM parameter (LUE
+  half-saturation value)}
 }
 \value{
   vector of same length as number of rows in tower
@@ -37,7 +38,7 @@
   A., Lin, J., Gerbig, C., Munger, J., Chow, V., and
   Gottlieb, E.: A satellite-based biosphere
   parameterization for net ecosystem CO2 exchange:
-  Vegetation Photosynthesis and Respira- tion Model (VPRM),
+  Vegetation Photosynthesis and Respiration Model (VPRM),
   Global Biogeochem. Cy., 22, GB2005,
   doi:10.1029/2006GB002735, 2008.
 }

@@ -5,13 +5,13 @@
   getEVI(rho_nir, rho_red, rho_blue)
 }
 \arguments{
-  \item{rho_nir}{numeric vector; near-infrared (841-876 nm)
-  band satellite-derived reflectance}
+  \item{rho_nir}{1xN numeric vector; near-infrared (841-876
+  nm) band satellite-derived reflectance}
 
-  \item{rho_red}{numeric vector; red band satellite-derived
-  reflectance}
+  \item{rho_red}{1xN numeric vector; red band
+  satellite-derived reflectance}
 
-  \item{rho_blue}{numeric vector; blue band
+  \item{rho_blue}{1xN numeric vector; blue band
   satellite-derived reflectance}
 }
 \value{
@@ -30,7 +30,7 @@
   A., Lin, J., Gerbig, C., Munger, J., Chow, V., and
   Gottlieb, E.: A satellite-based biosphere
   parameterization for net ecosystem CO2 exchange:
-  Vegetation Photosynthesis and Respira- tion Model (VPRM),
+  Vegetation Photosynthesis and Respiration Model (VPRM),
   Global Biogeochem. Cy., 22, GB2005,
   doi:10.1029/2006GB002735, 2008.
 }
