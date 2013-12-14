@@ -14,5 +14,11 @@ Description: Provides an R implementation of the Vegetation Photosynthesis and
     VPRM, use (within R) "citation("VPRMModel")".
 License: GPL-3
 LazyLoad: yes
+Imports:
+    chron
 Collate:
+    'EVI_to_phenology.R'
+    'VPRM_driver_data.R'
+    'interpMODIS.R'
     'vprm.R'
+    'interp_phenology.R'

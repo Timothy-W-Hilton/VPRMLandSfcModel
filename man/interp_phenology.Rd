@@ -1,0 +1,31 @@
+\name{interp_phenology}
+\alias{interp_phenology}
+\title{fill MODIS phenology status to arbitrary dates.}
+\usage{
+  interp_phenology(phen, dates)
+}
+\arguments{
+  \item{phen}{data frame with variables date (chron), phen
+  (factor with levels ginc, gdec, gmin, gmax)}
+
+  \item{dates}{chron; dates to fill in.}
+}
+\value{
+  phen filled to the dates in dates
+}
+\description{
+  perform constant interpolation of phenology factor codes(
+  ginc, gmax, gdec, gmin ). That is, fill phenology
+  transition status forward until the value changes,
+  resulting in a ginc, gmax, gdec, or gmin value at all
+  timestamps.
+}
+\details{
+  The interpolation converts the factors to numeric codes 1
+  to 4 -- this code creates a dictionary and maps them
+  back, preserving their factor status for readability.
+}
+\author{
+  Timothy W. Hilton
+}
+

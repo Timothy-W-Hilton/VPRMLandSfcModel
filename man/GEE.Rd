@@ -2,13 +2,15 @@
 \alias{GEE}
 \title{calculate VPRM GEE}
 \usage{
-  GEE(tower, lambda = NULL, alpha = NULL, beta = NULL,
-    PAR_0 = NULL)
+  GEE(driver_data, lambda = NULL, alpha = NULL,
+    beta = NULL, PAR_0 = NULL)
 }
 \arguments{
-  \item{tower}{data frame containing (at least) variables
-  Tscale, Pscale, Wscale, EVI, PAR, Tresp.  May also
-  contain lambda, alpha, beta, PAR_0.}
+  \item{driver_data}{May be a VPRM_driver_data object or a
+  data frame.  If a data frame, driver_data must contain
+  the variables Tscale, Pscale, Wscale, EVI, PAR, and
+  Tresp.  The variables lambda, alpha, beta, and PAR_0 are
+  optional (see 'details').}
 
   \item{lambda}{numeric, optional; VPRM parameter: maximum
   light use efficiency.}
@@ -23,7 +25,7 @@
   half-saturation value)}
 }
 \value{
-  vector of same length as number of rows in tower
+  vector of same length as number of rows in driver_data
   containin VPRM GEE \[umol m-2 s-1\]
 }
 \description{
