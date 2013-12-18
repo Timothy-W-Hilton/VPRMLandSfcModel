@@ -30,7 +30,8 @@
 ##' @param NEE_obs numeric vector; eddy covariance observed net
 ##' ecosystem exchange (NEE, umol m-2 s-1)
 ##' @param T numeric vector; observed air temperature (deg C)
-##' @param PAR numeric vector; observed photosynthetically active radiation (umol m-2 s-1)
+##' @param PAR numeric vector; observed photosynthetically active
+##' radiation (umol m-2 s-1)
 ##' @param date_nir chron vector; timestamps for NIR reflectance.
 ##' @param rho_nir numeric vector; NIR reflectance values
 ##' @param date_swir  chron vector; timestamps for SWIR reflectance.
@@ -62,6 +63,26 @@
 ##' @author Timothy W. Hilton
 ##' @import chron
 ##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' print(head(as.data.frame(pfa_dd)))
+
 VPRM_driver_data <- function( name_long="",
                         name_short="",
                         lat=NA,

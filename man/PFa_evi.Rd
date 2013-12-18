@@ -1,0 +1,39 @@
+\docType{data}
+\name{PFa_evi}
+\alias{PFa_evi}
+\title{Park Falls EVI data}
+\format{data frame containing MODIS enhanced vegetation index (EVI) for the Park Falls, Wisconsin tall tower Ameriflux site.  The data frame contains the variables:
+\describe{
+\item{date}{chron object; EVI timestamps (date and time)}
+\item{evi}{the EVI value (unitless; 0 <= EVI <= 1)}
+\item{bird}{the satellite that made the measurements; (terra|aqua)}
+}}
+\source{
+  These data are extracted from the Oak Ridge National
+  Laboratory MODIS subsets for MODIS product MOD13Q1.
+}
+\description{
+  Park Falls EVI data
+}
+\note{
+  PFa_evi is part of the Park_Falls dataset. See
+  documentation for 'Park_Falls' for further details.
+}
+\examples{
+data(Park_Falls)
+with( PFa_evi, plot(date, evi,
+                    ylab='MODIS EVI', xlab='date',
+                    main='Park Falls EVI' ))
+}
+\references{
+  Oak Ridge National Laboratory Distributed Active Archive
+  Center (ORNL DAAC). 2011. MODIS subsetted land products,
+  Collection 5. Available on-line
+  [http://daac.ornl.gov/MODIS/modis.html] from ORNL DAAC,
+  Oak Ridge, Tennessee, U.S.A. Accessed 17 Dec, 2013.
+}
+\seealso{
+  \code{\link{Park_Falls}}
+}
+\keyword{datasets}
+

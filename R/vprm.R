@@ -262,3 +262,4 @@ GEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
   
    return(GEE)
 }
+

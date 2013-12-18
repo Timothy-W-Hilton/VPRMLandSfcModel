@@ -1,0 +1,10 @@
+Changes from version 1.0 to 1.1   18 Dec 2013
+
+	* added Park_Falls dataset
+	* added example code for all functions
+	* changed the package name from "VPRMModel" to "VPRM".  The name
+	VPRMModel reflects an earlier state of the R code where the
+	functionality was divided between two packages, VPRMModel and
+	VPRMFramework.  I have eliminated VPRMFramework toward the goal of
+	having everything in one package, so now VPRMModel is redundant
+	(because the "M" in VPRM already abbreviates "model").

@@ -1,6 +1,6 @@
-\name{VPRMModel-package}
-\alias{VPRMModel-package}
-\alias{VPRMModel}
+\name{VPRM-package}
+\alias{VPRM-package}
+\alias{VPRM}
 \docType{package}
 \title{
 R implementation of VPRM
@@ -14,7 +14,7 @@ exchange (NEE) of carbon dioxide.
 }
 \details{
 \tabular{ll}{
-Package: \tab VPRMModel\cr
+Package: \tab VPRM\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2008-08-13\cr
@@ -45,7 +45,7 @@ Maintainer: Timothy W. Hilton <thilton@ucmerced.edu>
   exchange: Vegetation photosynthesis and respiration model (VPRM). Global
   Biogeochemical Cycles, 22, GB2005. doi:10.1029/2006GB002735.
 
-  To cite the R package 'VPRMModel', use:\cr
+  To cite the R package 'VPRM', use:\cr
   Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.: Improving
   North American terrestrial CO2 flux diagnosis using spatial structure
   in land surface model residuals, Biogeosciences, 10, 4607-4625,
