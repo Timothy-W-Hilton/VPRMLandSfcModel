@@ -27,8 +27,14 @@
 ##' Spectroradiometer (MODIS): Evaluation of global patterns and
 ##' comparison with in situ measurements, J. Geophys. Res., 111,
 ##' G04017, doi:10.1029/2006JG000217.
-##' 
 ##' @export
+##' @examples
+##' data(Park_Falls)
+##' names(PFa_evi) <- c('t', 'EVI', 'sitecode')
+##' PFa_evi[['sitecode']] <- "US-PFa"
+##' print(head(PFa_evi))
+##' phen_transition_dates <- detect_large_greenness_change_periods(PFa_evi)
+##' print(head(phen_transition_dates))
 detect_large_greenness_change_periods <- function( data, verbose=0 ) {
 
     ## data should contain observations from one and only one site

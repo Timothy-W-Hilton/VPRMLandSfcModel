@@ -28,6 +28,14 @@
   locate periods of sustained greeness increase or decrease
   within an EVI time series
 }
+\examples{
+data(Park_Falls)
+names(PFa_evi) <- c('t', 'EVI', 'sitecode')
+PFa_evi[['sitecode']] <- "US-PFa"
+print(head(PFa_evi))
+phen_transition_dates <- detect_large_greenness_change_periods(PFa_evi)
+print(head(phen_transition_dates))
+}
 \author{
   Timothy W. Hilton
 }

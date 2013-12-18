@@ -13,6 +13,11 @@
 ##' @param dates chron; dates to fill in. 
 ##' @return phen filled to the dates in dates
 ##' @author Timothy W. Hilton
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' interpolated_phen <- interp_phenology(phen=PFa_phen, 
+##'                                       dates=PFa_tower_obs[['date']])
 interp_phenology <- function( phen, dates ) {
 
   idx_dict <- data.frame( code=levels( phen$phen ),

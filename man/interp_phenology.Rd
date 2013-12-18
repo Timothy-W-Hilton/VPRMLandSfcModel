@@ -25,6 +25,11 @@
   to 4 -- this code creates a dictionary and maps them
   back, preserving their factor status for readability.
 }
+\examples{
+data(Park_Falls)
+interpolated_phen <- interp_phenology(phen=PFa_phen,
+                                      dates=PFa_tower_obs[['date']])
+}
 \author{
   Timothy W. Hilton
 }

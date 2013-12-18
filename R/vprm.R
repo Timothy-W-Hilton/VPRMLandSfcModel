@@ -14,7 +14,10 @@
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
 ##' @author Timothy W. Hilton
-##' @export 
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' Tscale <- getTscale( PFa_tower_obs[['TA']], Tmax=40, Tmin=0, Topt=20 )
 getTscale <- function (T, Tmax, Tmin, Topt) 
 {
   numer <- (T - Tmin) * (T - Tmax)
@@ -52,7 +55,27 @@ getTscale <- function (T, Tmax, Tmin, Topt)
 ##' Sensing of Environment, Volume 84, Issue 3, March 2003, Pages
 ##' 471-475, ISSN 0034-4257,
 ##' http://dx.doi.org/10.1016/S0034-4257(02)00135-9.
-##' @export 
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' pfa_df <- as.data.frame( pfa_dd )
+##' pscale <- getPscale( pfa_df[['LSWI']], pfa_df[['phen']] )
 getPscale <- function( LSWI, phen ) {
   
   Pscale <- (1 + LSWI)/2
@@ -74,43 +97,30 @@ getPscale <- function( LSWI, phen ) {
 ##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
-##' @export 
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' pfa_df <- as.data.frame( pfa_dd )
+##' wscale <- getWscale(pfa_df[['LSWI']], max(pfa_df[['LSWI']], na.rm=TRUE ))
 getWscale <- function(LSWI, LSWI_max) {
   Wscale <- (1 + LSWI) / (1 + LSWI_max)
   return(Wscale)
-}
-
-##' calculates EVI from MODIS reflectances according to eqn 2 in
-##' Mahadevan et al, 2007
-##' 
-##' @title calculate EVI
-##' @param rho_nir 1xN numeric vector; near-infrared (841-876 nm) band
-##' satellite-derived reflectance
-##' @param rho_red 1xN numeric vector; red band satellite-derived
-##' reflectance
-##' @param rho_blue 1xN numeric vector; blue band satellite-derived
-##' reflectance
-##' @return numeric; EVI term in VPRM equation (eqn 12 in Mahadevan et
-##' al, 2007)
-##' @author Timothy W. Hilton
-##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
-##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
-##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respiration Model
-##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
-##' doi:10.1029/2006GB002735, 2008.
-##' @export 
-getEVI <- function(rho_nir, rho_red, rho_blue) {
-
-  G <- 2.5
-  C1 <- 6.0
-  C2 <- 7.5
-  L <- 1.0
-  
-  numer <- G * (rho_nir - rho_red)
-  denom <- rho_nir + L + ( (C1*rho_red) - (C2*rho_blue) )
-  EVI <- numer / denom
-  return(EVI)
 }
 
 ##' calculates land surface water index (LSWI) according to eqn 3 in
@@ -137,7 +147,28 @@ getEVI <- function(rho_nir, rho_red, rho_blue) {
 ##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
-##' @export 
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' pfa_df <- as.data.frame( pfa_dd )
+##' LSWI <- getLSWI( rho_nir=pfa_df[['rho_nir']],
+##'                  rho_swir=pfa_df[['rho_swir']] )
 getLSWI <- function(rho_nir, rho_swir) {
   LSWI <- (rho_nir - rho_swir) / (rho_nir + rho_swir)
   return(LSWI)
@@ -175,13 +206,41 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' @return vector of same length as number of rows in driver_data containin
 ##' VPRM NEE \[umol m-2 s-1\]
 ##' @author Timothy W. Hilton
+##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban,
+##' N. M.: Improving North American terrestrial CO2 flux diagnosis
+##' using spatial structure in land surface model residuals,
+##' Biogeosciences, 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013.
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
 ##' satellite-based biosphere parameterization for net ecosystem CO2
 ##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008.
-##' @export 
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' #all-sites--all-time VPRM parameters from Hilton et al (2013)
+##' lambda <- 0.06940179
+##' PAR_0 <- 1104.81
+##' alpha <- 0.04672012
+##' beta <- 0.5260401
+##' NEE <- NEE(pfa_dd, lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
 NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
 
     driver_data <- as.data.frame( driver_data )
@@ -246,20 +305,46 @@ NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
 ##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
 ##' doi:10.1029/2006GB002735, 2008. 
-##' @export 
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' #all-sites--all-time VPRM parameters from Hilton et al (2013)
+##' lambda <- 0.06940179
+##' PAR_0 <- 1104.81
+##' alpha <- 0.04672012
+##' beta <- 0.5260401
+##' GEE <- GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
 GEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
 
-  #if parameters not provided in function call, get them from the
-  #   driver_data data frame
-  if (is.null(lambda)) lambda <- driver_data$lambda
-  if (is.null(alpha))  alpha  <- driver_data$alpha
-  if (is.null(beta))   beta   <- driver_data$beta
-  if (is.null(PAR_0))  PAR_0  <- driver_data$PAR_0
-  
-  GEE <-  (-1.0) * lambda * driver_data[, "Tscale"] * driver_data[, "Pscale"] *
-    driver_data[, "Wscale"] * (1 / (1 + (driver_data[, "PAR"]/PAR_0))) *
-      driver_data[, "EVI"] * driver_data[, "PAR"]
-  
-   return(GEE)
+    driver_data <- as.data.frame( driver_data )
+
+    ##if parameters not provided in function call, get them from the
+    ##driver_data data frame
+    if (is.null(lambda)) lambda <- driver_data$lambda
+    if (is.null(alpha))  alpha  <- driver_data$alpha
+    if (is.null(beta))   beta   <- driver_data$beta
+    if (is.null(PAR_0))  PAR_0  <- driver_data$PAR_0
+    
+    GEE <-  (-1.0) * lambda * driver_data[, "Tscale"] * driver_data[, "Pscale"] *
+        driver_data[, "Wscale"] * (1 / (1 + (driver_data[, "PAR"]/PAR_0))) *
+            driver_data[, "EVI"] * driver_data[, "PAR"]
+    
+    return(GEE)
 }
 

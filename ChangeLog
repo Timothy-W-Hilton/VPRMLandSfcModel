@@ -2,6 +2,11 @@ Changes from version 1.0 to 1.1   18 Dec 2013
 
 	* added Park_Falls dataset
 	* added example code for all functions
+	* (vprm.R) removed getEVI.  While I don't see anything wrong with
+	the arithmetic in the calculation, the EVI values it produces
+	don't look very good.  I wrote it before realizing there is a
+	MODIS EVI product (e.g. MOD13Q1).  Better to just use the MODIS
+	product.
 	* changed the package name from "VPRMModel" to "VPRM".  The name
 	VPRMModel reflects an earlier state of the R code where the
 	functionality was divided between two packages, VPRMModel and

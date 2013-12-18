@@ -18,6 +18,27 @@
   calculates Wscale according to eqn 8 in Mahadevan et al,
   2007
 }
+\examples{
+data(Park_Falls)
+pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+                           name_short = "US-PFa",
+                           lat=45.9459,
+                           lon=-90.2723,
+                           PFT='MF',
+                           tower_date=PFa_tower_obs[['date']],
+                           NEE_obs=PFa_tower_obs[['FC']],
+                           T=PFa_tower_obs[['TA']],
+                           PAR=PFa_tower_obs[['PAR']],
+                           date_nir = PFa_refl[['date']],
+                           rho_nir=PFa_refl[['nir']],
+                           date_swir = PFa_refl[['date']],
+                           rho_swir = PFa_refl[['swir']],
+                           date_EVI = PFa_evi[['date']],
+                           EVI=PFa_evi[['evi']],
+                           phen=NA)
+pfa_df <- as.data.frame( pfa_dd )
+wscale <- getWscale(pfa_df[['LSWI']], max(pfa_df[['LSWI']], na.rm=TRUE ))
+}
 \author{
   Timothy W. Hilton
 }

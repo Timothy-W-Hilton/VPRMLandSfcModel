@@ -23,6 +23,23 @@
   set of dates using either linear or constant
   interpolation.
 }
+\examples{
+data(Park_Falls)
+interpolated_EVI <- interpMODIS(mod_date=PFa_evi[['date']],
+                                mod_val=PFa_evi[['evi']],
+                                out_date=PFa_tower_obs[['date']],
+                                method='linear')
+plot(interpolated_EVI[['date']], interpolated_EVI[['val']],
+     type='l', lty='dashed',
+     xlab='date', ylab='EVI', main='Park Falls')
+with(PFa_evi, points(date, evi, pch='*', cex=2.0, col='red'))
+legend( x='topright',
+       legend=c('observed', 'interpolated'),
+       pch=c('*', NULL),
+       col=c('red', 'black'),
+       lty=c('blank', 'dashed'),
+       pt.cex=c(2.0, 1.0))
+}
 \author{
   Timothy W. Hilton
 }

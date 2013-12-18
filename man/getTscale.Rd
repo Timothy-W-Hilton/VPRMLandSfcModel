@@ -23,6 +23,10 @@
   calculates Tscale according to eqn 6 in Mahadevan et al,
   2007
 }
+\examples{
+data(Park_Falls)
+Tscale <- getTscale( PFa_tower_obs[['TA']], Tmax=40, Tmin=0, Topt=20 )
+}
 \author{
   Timothy W. Hilton
 }
