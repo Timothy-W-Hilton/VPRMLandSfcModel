@@ -126,7 +126,7 @@ getWscale <- function(LSWI, LSWI_max) {
 ##' calculates land surface water index (LSWI) according to eqn 3 in
 ##' Mahadevan et al, 2007.
 ##' 
-##' LSWI may range from -1 to 1 (Xiao et al 2004).
+##' LSWI may not exceed 1.0 and may take negative values (Xiao et al 2004)
 ##' @title calculate LSWI
 ##' @param rho_nir 1xN numeric vector; near-infrared (841-876 nm) band
 ##' satellite-derived reflectance
@@ -204,7 +204,7 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' @param beta numeric, optional; VPRM parameter (basal respiration rate)
 ##' @param PAR_0 numeric, optional; VPRM parameter (LUE half-saturation value)
 ##' @return vector of same length as number of rows in driver_data containin
-##' VPRM NEE \[umol m-2 s-1\]
+##' VPRM NEE [umol m-2 s-1]
 ##' @author Timothy W. Hilton
 ##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban,
 ##' N. M.: Improving North American terrestrial CO2 flux diagnosis
@@ -240,64 +240,36 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' PAR_0 <- 1104.81
 ##' alpha <- 0.04672012
 ##' beta <- 0.5260401
-##' NEE <- NEE(pfa_dd, lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
-NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
-
-    driver_data <- as.data.frame( driver_data )
-    
-    ##if parameters not provided in function call, get them from driver_data
-    if (is.null(lambda)) {
-        if ('lambda' %in% names( driver_data ) ) {
-            lambda <- driver_data[['lambda']]
-        } else {
-            stop('lambda is unspecified')
-        }
-    }
-    if (is.null(PAR_0)) {
-        if ('PAR_0' %in% names( driver_data ) ) {
-            PAR_0 <- driver_data[['PAR_0']]
-        } else {
-            stop('PAR_0 is unspecified')
-        }
-    }
-    if (is.null(alpha)) {
-        if ('alpha' %in% names( driver_data ) ) {
-            alpha <- driver_data[['alpha']]
-        } else {
-            stop('alpha is unspecified')
-        }
-    }
-    if (is.null(beta)) {
-        if ('beta' %in% names( driver_data ) ) {
-            beta <- driver_data[['beta']]
-        } else {
-            stop('beta is unspecified')
-        }
-    }
-
-    ## make sure VPRM parameters were specified as either function
-    ## parameters or within driver_data
-    
-    GEE <-  ( (-1.0) * lambda *
-             driver_data[, "Tscale"] *
-             driver_data[, "Pscale"] *
-             driver_data[, "Wscale"] *
-             (1 / (1 + (driver_data[, "PAR"]/PAR_0))) *
-             driver_data[, "EVI"] *
-             driver_data[, "PAR"] )
-    
-    R <- alpha * driver_data[, "Tresp"] + beta
-
-    NEE <- GEE + R
+##' NEE <- vprm_calc_NEE(pfa_dd,
+##'                      lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
+vprm_calc_NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
+    GEE <- vprm_calc_GEE(driver_data, lambda, PAR_0)
+    R <- vprm_calc_R(driver_data, alpha, beta)
+    NEE <- R - GEE
     return(NEE)
 }
 
-##' calculate VPRM GEE according to Mahadevan et al (2008) eq. 4
+##' calculate VPRM GEE according to Mahadevan et al (2008) eq. 9
+##'
+##' Arguments lambda and PAR_0 may be omitted from the function call.
+##' In this case they must be present as variables in data frame
+##' driver_data.  If either of these parameters are present in
+##' driver_data *and* specified as parameters in the function call the
+##' function parameter values will be used and the values in
+##' driver_data will be ignored.  If specifed as function parameters
+##' lambda and PAR_0 may be single values or numeric vectors the same
+##' length as the number of observations in driver_data.
 ##'
 ##' @title calculate VPRM GEE
-##' @inheritParams NEE
+##' @param driver_data May be a VPRM_driver_data object or a data
+##' frame.  If a data frame, driver_data must contain the variables
+##' Tscale, Pscale, Wscale, EVI, and PAR.  The variables
+##' lambda, and PAR_0 are optional (see 'details').
+##' @param lambda numeric, optional; VPRM parameter: maximum light use
+##' efficiency.  
+##' @param PAR_0 numeric, optional; VPRM parameter (LUE half-saturation value)
 ##' @return vector of same length as number of rows in driver_data containin
-##' VPRM GEE \[umol m-2 s-1\]
+##' VPRM GEE [umol m-2 s-1]
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
@@ -327,24 +299,124 @@ NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
 ##' #all-sites--all-time VPRM parameters from Hilton et al (2013)
 ##' lambda <- 0.06940179
 ##' PAR_0 <- 1104.81
-##' alpha <- 0.04672012
-##' beta <- 0.5260401
-##' GEE <- GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
-GEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
+##' GEE <- vprm_calc_GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0)
+vprm_calc_GEE <- function(driver_data, lambda=NULL, PAR_0=NULL) {
 
     driver_data <- as.data.frame( driver_data )
 
-    ##if parameters not provided in function call, get them from the
-    ##driver_data data frame
-    if (is.null(lambda)) lambda <- driver_data$lambda
-    if (is.null(alpha))  alpha  <- driver_data$alpha
-    if (is.null(beta))   beta   <- driver_data$beta
-    if (is.null(PAR_0))  PAR_0  <- driver_data$PAR_0
-    
-    GEE <-  (-1.0) * lambda * driver_data[, "Tscale"] * driver_data[, "Pscale"] *
-        driver_data[, "Wscale"] * (1 / (1 + (driver_data[, "PAR"]/PAR_0))) *
-            driver_data[, "EVI"] * driver_data[, "PAR"]
-    
+    ## make sure VPRM parameters were specified as either function
+    ## parameters or within driver_data
+    if (is.null(lambda)) {
+        if ('lambda' %in% names( driver_data ) ) {
+            lambda <- driver_data[['lambda']]
+        } else {
+            stop('lambda is unspecified')
+        }
+    }
+    if (is.null(PAR_0)) {
+        if ('PAR_0' %in% names( driver_data ) ) {
+            PAR_0 <- driver_data[['PAR_0']]
+        } else {
+            stop('PAR_0 is unspecified')
+        }
+    }
+
+    ## calculate GEE according to Mahadevean et al (2008) eqn 9
+    GEE <- (lambda *
+            driver_data[, "Tscale"] *
+            driver_data[, "Pscale"] *
+            driver_data[, "Wscale"] *
+            (1 / (1 + (driver_data[, "PAR"]/PAR_0))) *
+            driver_data[, "EVI"] *
+            driver_data[, "PAR"] )
+
     return(GEE)
 }
 
+
+##' calculates VPRM ecosystem respiration (R) according to eqn 10
+##' in Mahadevan et al, 2007
+##'
+##' Arguments alpha and beta may be omitted from the function call.
+##' In this case they must be present as variables in data frame
+##' driver_data.  If either of these parameters are present in
+##' driver_data *and* specified as parameters in the function call the
+##' function parameter values will be used and the values in
+##' driver_data will be ignored.  If specifed as function parameters
+##' alpha and beta may be single values or numeric vectors the same
+##' length as the number of observations in driver_data.
+##'
+##' The Tresp variable in driver_data is the temperature used to calculate
+##' respiration.  Tresp should be max(Tair, Tlow), where Tair is the
+##' air temperature (deg C) and Tlow is the minimum air temperature
+##' (deg C) for respiration.  This is explained more fully in
+##' Mahadevan et al (2008) section 2.2.
+##' @title calculate VPRM ecosystem respiration
+##' @param driver_data May be a VPRM_driver_data object or a data
+##' frame.  If a data frame, driver_data must contain the variables
+##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables alpha
+##' and beta are optional (see 'details').
+##' @param alpha numeric, optional; VPRM parameter (slope of respiration with
+##' respect to temperature)
+##' @param beta numeric, optional; VPRM parameter (basal respiration rate)
+##' @return vector of same length as number of rows in driver_data containin
+##' VPRM ecosystem respiration [umol m-2 s-1]
+##' @author Timothy W. Hilton
+##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban,
+##' N. M.: Improving North American terrestrial CO2 flux diagnosis
+##' using spatial structure in land surface model residuals,
+##' Biogeosciences, 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013.
+##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
+##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
+##' satellite-based biosphere parameterization for net ecosystem CO2
+##' exchange: Vegetation Photosynthesis and Respiration Model
+##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
+##' doi:10.1029/2006GB002735, 2008.
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' #all-sites--all-time VPRM parameters from Hilton et al (2013)
+##' alpha <- 0.04672012
+##' beta <- 0.5260401
+##' ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
+vprm_calc_R <- function(driver_data, alpha=NULL, beta=NULL) {
+
+    driver_data <- as.data.frame( driver_data )
+    
+    ## make sure VPRM parameters were specified as either function
+    ## parameters or within driver_data
+    if (is.null(alpha)) {
+        if ('alpha' %in% names( driver_data ) ) {
+            alpha <- driver_data[['alpha']]
+        } else {
+            stop('alpha is unspecified')
+        }
+    }
+    if (is.null(beta)) {
+        if ('beta' %in% names( driver_data ) ) {
+            beta <- driver_data[['beta']]
+        } else {
+            stop('beta is unspecified')
+        }
+    }
+
+    R <- alpha * driver_data[, "Tresp"] + beta
+
+    return(R)
+}

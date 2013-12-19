@@ -18,8 +18,7 @@
 ##' from the Ameriflux site MODIS snapshots provided by Oak Ridge
 ##' National Laboratory (\url{http://daac.ornl.gov/MODIS/}).
 ##' @author Timothy W. Hilton
-##' @seealso The dataset Park_Falls consists of four data frames:
-##' \code{\link{PFa_tower_obs}}, \code{\link{PFa_evi}},
+##' @seealso \code{\link{PFa_tower_obs}}, \code{\link{PFa_evi}},
 ##' \code{\link{PFa_refl}}, \code{\link{PFa_phen}}
 ##' @references MODIS snapshots: \url{http://daac.ornl.gov/MODIS/}
 ##' @references The Park Falls, Wisconsin, USA Ameriflux site: \url{ameriflux.lbl.gov}, Berger et al (2000).
@@ -50,6 +49,7 @@ NULL
 ##' @note PFa_tower_obs is part of the Park_Falls dataset. See
 ##' documentation for 'Park_Falls' for further details.
 ##' @seealso \code{\link{Park_Falls}}
+##' @references \url{http://ameriflux.lbl.gov}
 ##' @examples
 ##' data(Park_Falls)
 ##' with( PFa_tower_obs, plot(date, TA,

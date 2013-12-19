@@ -48,7 +48,6 @@ with( PFa_evi, plot(date, evi,
   Technol., 18, 529-542.
 }
 \seealso{
-  The dataset Park_Falls consists of four data frames:
   \code{\link{PFa_tower_obs}}, \code{\link{PFa_evi}},
   \code{\link{PFa_refl}}, \code{\link{PFa_phen}}
 }

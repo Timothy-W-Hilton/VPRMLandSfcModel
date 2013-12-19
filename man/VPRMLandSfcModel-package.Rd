@@ -24,8 +24,9 @@ LazyLoad: \tab yes\cr
 The literature in the references section provides a detailed description
 of VPRM.
 
-The top-level function is NEE.  NEE calculates net ecosystem exchange
-(NEE) according to the VPRM.
+The top-level function is vprm_calc_NEE.  vprm_calc_NEE calculates net
+ecosystem exchange (NEE) according to the VPRM (Mahadevan et al (2008)
+eqn 12).
 
 The other functions provide methods to obtain the necessary driver data
 and to calculate some of the intermediate quantities that VPRM derives

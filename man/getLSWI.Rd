@@ -20,7 +20,8 @@
   eqn 3 in Mahadevan et al, 2007.
 }
 \details{
-  LSWI may range from -1 to 1 (Xiao et al 2004).
+  LSWI may not exceed 1.0 and may take negative values
+  (Xiao et al 2004)
 }
 \examples{
 data(Park_Falls)

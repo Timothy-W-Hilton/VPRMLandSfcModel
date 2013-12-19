@@ -78,9 +78,9 @@
 \value{
   an object of class VPRM_driver_data.  Has fields (see
   above arguments for definitions): name_long, name_short,
-  lat, lon, PFT, note, Tmin, Tmax, Topt, Tlow.  The last
-  field is data, a data frame with variables NEE_obs, T,
-  PAR, rho_nir, rho_swir, EVI, and phen.
+  lat, lon, PFT, note, Tmin, Tmax, Topt, Tlow.  The data
+  for NEE_obs, T, PAR, rho_nir, rho_swir, EVI, and phen
+  should be accessed using the as.data.frame method.
 }
 \description{
   class constructor for VPRM_driver_data.  Accepts all

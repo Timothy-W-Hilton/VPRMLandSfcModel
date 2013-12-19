@@ -22,8 +22,8 @@
 ##' Sensing of Environment, Volume 84, Issue 3, March 2003, Pages
 ##' 471-475, ISSN 0034-4257,
 ##' http://dx.doi.org/10.1016/S0034-4257(02)00135-9.
-##' @references M. A. Friedl, and C. B. Schaaf (2006), Global
-##' vegetation phenology from Moderate Resolution Imaging
+##' @references Zhang, X., M. A. Friedl, and C. B. Schaaf (2006),
+##' Global vegetation phenology from Moderate Resolution Imaging
 ##' Spectroradiometer (MODIS): Evaluation of global patterns and
 ##' comparison with in situ measurements, J. Geophys. Res., 111,
 ##' G04017, doi:10.1029/2006JG000217.

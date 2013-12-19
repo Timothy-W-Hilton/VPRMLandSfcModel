@@ -1,36 +1,40 @@
-\name{GEE}
-\alias{GEE}
+\name{vprm_calc_GEE}
+\alias{vprm_calc_GEE}
 \title{calculate VPRM GEE}
 \usage{
-  GEE(driver_data, lambda = NULL, alpha = NULL,
-    beta = NULL, PAR_0 = NULL)
+  vprm_calc_GEE(driver_data, lambda = NULL, PAR_0 = NULL)
 }
 \arguments{
   \item{driver_data}{May be a VPRM_driver_data object or a
   data frame.  If a data frame, driver_data must contain
-  the variables Tscale, Pscale, Wscale, EVI, PAR, and
-  Tresp.  The variables lambda, alpha, beta, and PAR_0 are
-  optional (see 'details').}
+  the variables Tscale, Pscale, Wscale, EVI, and PAR.  The
+  variables lambda, and PAR_0 are optional (see
+  'details').}
 
   \item{lambda}{numeric, optional; VPRM parameter: maximum
   light use efficiency.}
-
-  \item{alpha}{numeric, optional; VPRM parameter (slope of
-  respiration with respect to temperature)}
-
-  \item{beta}{numeric, optional; VPRM parameter (basal
-  respiration rate)}
 
   \item{PAR_0}{numeric, optional; VPRM parameter (LUE
   half-saturation value)}
 }
 \value{
   vector of same length as number of rows in driver_data
-  containin VPRM GEE \[umol m-2 s-1\]
+  containin VPRM GEE [umol m-2 s-1]
 }
 \description{
   calculate VPRM GEE according to Mahadevan et al (2008)
-  eq. 4
+  eq. 9
+}
+\details{
+  Arguments lambda and PAR_0 may be omitted from the
+  function call. In this case they must be present as
+  variables in data frame driver_data.  If either of these
+  parameters are present in driver_data *and* specified as
+  parameters in the function call the function parameter
+  values will be used and the values in driver_data will be
+  ignored.  If specifed as function parameters lambda and
+  PAR_0 may be single values or numeric vectors the same
+  length as the number of observations in driver_data.
 }
 \examples{
 data(Park_Falls)
@@ -53,9 +57,7 @@ pfa_dd <- VPRM_driver_data(name_long="Park Falls",
 #all-sites--all-time VPRM parameters from Hilton et al (2013)
 lambda <- 0.06940179
 PAR_0 <- 1104.81
-alpha <- 0.04672012
-beta <- 0.5260401
-GEE <- GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
+GEE <- vprm_calc_GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0)
 }
 \author{
   Timothy W. Hilton

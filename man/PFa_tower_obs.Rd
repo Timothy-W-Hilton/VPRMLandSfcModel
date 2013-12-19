@@ -25,6 +25,9 @@ with( PFa_tower_obs, plot(date, TA,
                   ylab='T (C)', xlab='date',
                   main='Park Falls surface temperature'))
 }
+\references{
+  \url{http://ameriflux.lbl.gov}
+}
 \seealso{
   \code{\link{Park_Falls}}
 }

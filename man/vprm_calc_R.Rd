@@ -1,48 +1,40 @@
-\name{NEE}
-\alias{NEE}
-\title{calculate VPRM NEE}
+\name{vprm_calc_R}
+\alias{vprm_calc_R}
+\title{calculate VPRM ecosystem respiration}
 \usage{
-  NEE(driver_data, lambda = NULL, alpha = NULL,
-    beta = NULL, PAR_0 = NULL)
+  vprm_calc_R(driver_data, alpha = NULL, beta = NULL)
 }
 \arguments{
   \item{driver_data}{May be a VPRM_driver_data object or a
   data frame.  If a data frame, driver_data must contain
   the variables Tscale, Pscale, Wscale, EVI, PAR, and
-  Tresp.  The variables lambda, alpha, beta, and PAR_0 are
-  optional (see 'details').}
-
-  \item{lambda}{numeric, optional; VPRM parameter: maximum
-  light use efficiency.}
+  Tresp.  The variables alpha and beta are optional (see
+  'details').}
 
   \item{alpha}{numeric, optional; VPRM parameter (slope of
   respiration with respect to temperature)}
 
   \item{beta}{numeric, optional; VPRM parameter (basal
   respiration rate)}
-
-  \item{PAR_0}{numeric, optional; VPRM parameter (LUE
-  half-saturation value)}
 }
 \value{
   vector of same length as number of rows in driver_data
-  containin VPRM NEE \[umol m-2 s-1\]
+  containin VPRM ecosystem respiration [umol m-2 s-1]
 }
 \description{
-  calculates VPRM net ecosystem exchange (NEE) according to
-  eqn 12 in Mahadevan et al, 2007
+  calculates VPRM ecosystem respiration (R) according to
+  eqn 10 in Mahadevan et al, 2007
 }
 \details{
-  Arguments lambda, alpha, beta, and PAR_0 may be omitted
-  from the function call.  In this case they must be
-  present as variables in data frame driver_data.  If any
-  of these four parameters are present in driver_data *and*
-  specified as parameters in the function call the function
-  parameter values will be used and the values in
-  driver_data will be ignored.  If specifed as function
-  parameters lambda, alpha, beta, and PAR_0 may be single
-  values or numeric vectors the same length as the number
-  of observations in driver_data.
+  Arguments alpha and beta may be omitted from the function
+  call. In this case they must be present as variables in
+  data frame driver_data.  If either of these parameters
+  are present in driver_data *and* specified as parameters
+  in the function call the function parameter values will
+  be used and the values in driver_data will be ignored.
+  If specifed as function parameters alpha and beta may be
+  single values or numeric vectors the same length as the
+  number of observations in driver_data.
 
   The Tresp variable in driver_data is the temperature used
   to calculate respiration.  Tresp should be max(Tair,
@@ -70,11 +62,9 @@ pfa_dd <- VPRM_driver_data(name_long="Park Falls",
                            EVI=PFa_evi[['evi']],
                            phen=NA)
 #all-sites--all-time VPRM parameters from Hilton et al (2013)
-lambda <- 0.06940179
-PAR_0 <- 1104.81
 alpha <- 0.04672012
 beta <- 0.5260401
-NEE <- NEE(pfa_dd, lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
+ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
 }
 \author{
   Timothy W. Hilton

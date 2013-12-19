@@ -21,6 +21,26 @@
   The data field of the VPRM_driver_data object is kept.
   Other fields (short name, long name, etc.) are discarded.
 }
+\examples{
+data(Park_Falls)
+pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+                           name_short = "US-PFa",
+                           lat=45.9459,
+                           lon=-90.2723,
+                           PFT='MF',
+                           tower_date=PFa_tower_obs[['date']],
+                           NEE_obs=PFa_tower_obs[['FC']],
+                           T=PFa_tower_obs[['TA']],
+                           PAR=PFa_tower_obs[['PAR']],
+                           date_nir = PFa_refl[['date']],
+                           rho_nir=PFa_refl[['nir']],
+                           date_swir = PFa_refl[['date']],
+                           rho_swir = PFa_refl[['swir']],
+                           date_EVI = PFa_evi[['date']],
+                           EVI=PFa_evi[['evi']],
+                           phen=NA)
+print(head(as.data.frame(pfa_dd)))
+}
 \author{
   Timothy W. Hilton
 }

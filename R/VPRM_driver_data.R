@@ -43,11 +43,11 @@
 ##' greenness minimum), gmax (onset greenness maximum).  If not
 ##' specified, phenology dynsamics are calculated from EVI using a
 ##' method similar to Zhang et al (2003).
-##' @return an object of class VPRM_driver_data.  Has fields (see above
-##' arguments for definitions): name_long, name_short, lat, lon, PFT,
-##' note, Tmin, Tmax, Topt, Tlow.  The last field is data, a data
-##' frame with variables NEE_obs, T, PAR, rho_nir, rho_swir, EVI, and
-##' phen.
+##' @return an object of class VPRM_driver_data.  Has fields (see
+##' above arguments for definitions): name_long, name_short, lat, lon,
+##' PFT, note, Tmin, Tmax, Topt, Tlow.  The data for NEE_obs, T, PAR,
+##' rho_nir, rho_swir, EVI, and phen should be accessed using the
+##' as.data.frame method.
 ##' @references Mahadevan, P., S. C. Wofsy, D. M. Matross, X. Xiao,
 ##' A. L. Dunn, J. C. Lin, C. Gerbig, J. W. Munger, V. Y. Chow, and
 ##' E. W. Gottlieb (2008), A satellite-based biosphere
@@ -155,15 +155,15 @@ return( obj )
 
 ### ------------------------------------------------------------
 
-##' calculate LSWI, Tscale, Pscale, Wscale, and Tresp from observed
-##' quantities.
-##'
-##' This is a helper function for VPRM_driver_data, and is not public.
-##' @title calculate derived VPRM inputs from observations
-##' @param obj VPRM_driver_data object; provides the observations necessary.
-##' @return VPRM_driver_data object; same as input argument obj, but with
-##' derived fields filled in.
-##' @author Timothy W. Hilton
+## calculate LSWI, Tscale, Pscale, Wscale, and Tresp from observed
+## quantities.
+##
+## This is a helper function for VPRM_driver_data, and is not public.
+## @title calculate derived VPRM inputs from observations
+## @param obj VPRM_driver_data object; provides the observations necessary.
+## @return VPRM_driver_data object; same as input argument obj, but with
+## derived fields filled in.
+## @author Timothy W. Hilton
 calculate_VPRM_derived_input_fields <- function( obj ) {
 
   ## make sure class of obj is correct
@@ -207,6 +207,25 @@ calculate_VPRM_derived_input_fields <- function( obj ) {
 ##' @method as.data.frame VPRM_driver_data
 ##' @author Timothy W. Hilton
 ##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' print(head(as.data.frame(pfa_dd)))
 as.data.frame.VPRM_driver_data <- function( x, ... ) {
   return( x[[ 'data' ]] )
 }
