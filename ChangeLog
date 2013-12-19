@@ -7,9 +7,19 @@ Changes from version 1.0 to 1.1   18 Dec 2013
 	don't look very good.  I wrote it before realizing there is a
 	MODIS EVI product (e.g. MOD13Q1).  Better to just use the MODIS
 	product.
-	* changed the package name from "VPRMModel" to "VPRM".  The name
+	* (vprm.R) changed the "tower" argument for NEE and GEE to
+	"driver_data".  I think this more accurately reflects its
+	contents, which do not come exclusively from eddy covariance
+	towers (some driver data come from satellites or, in some cases,
+	reanalysis products).
+	* changed the package name from "VPRMModel" to "VPRMLandSfcModel".  The name
 	VPRMModel reflects an earlier state of the R code where the
 	functionality was divided between two packages, VPRMModel and
 	VPRMFramework.  I have eliminated VPRMFramework toward the goal of
-	having everything in one package, so now VPRMModel is redundant
-	(because the "M" in VPRM already abbreviates "model").
+	having everything in one package.  Now VPRMModel is redundant
+	(because the "M" in VPRM already abbreviates "model").  I think
+	that VPRMLandSfcModel, while perhaps similarly redundant with
+	"Model", strikes a good balance between brevity, describing the
+	model's purpose at a glance.  I considered naming the package
+	"VPRM", but I thought that might lead to confusion between the
+	model itself and the R package implementation.

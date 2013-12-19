@@ -1,23 +1,23 @@
-\name{VPRM-package}
-\alias{VPRM-package}
-\alias{VPRM}
+\name{VPRMLandSfcModel-package}
+\alias{VPRMLandSfcModel-package}
+\alias{VPRMLandSfcModel}
 \docType{package}
 \title{
 R implementation of VPRM
 }
 \description{
 Provides an R implementation of the Vegetation Photosynthesis and
-Respiration Model (VPRM).  VPRM is a simple light-use efficiency based
-diagnostic land surface model.  VPRM diagnoses gross ecosystem exchange
-(GEE) of carbon dioxide, ecosystem respiration (R), and net ecosystem
-exchange (NEE) of carbon dioxide.
+Respiration Model (VPRM) of Mahadevan et al (2008).  VPRM is a simple
+diagnostic land surface model based on light-use efficiency.  VPRM
+diagnoses gross ecosystem exchange (GEE) of carbon dioxide, ecosystem
+respiration (R), and net ecosystem exchange (NEE) of carbon dioxide.
 }
 \details{
 \tabular{ll}{
-Package: \tab VPRM\cr
+Package: \tab VPRMLandSfcModel\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2008-08-13\cr
+Version: \tab 1.1\cr
+Date: \tab 2013-12-18\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
@@ -25,11 +25,12 @@ The literature in the references section provides a detailed description
 of VPRM.
 
 The top-level function is NEE.  NEE calculates net ecosystem exchange
-(NEE) according to the VPRM model.
+(NEE) according to the VPRM.
 
-The other functions provide methods to calculate some of the
-intermediate quantities that VPRM derives from remote sensing
-observations (e.g. land surface water index, Tscale, Pscale, etc.).
+The other functions provide methods to obtain the necessary driver data
+and to calculate some of the intermediate quantities that VPRM derives
+from remote sensing observations (e.g. land surface water index, Tscale,
+Pscale, etc.).
 }
 \author{
 Timothy W. Hilton
@@ -45,7 +46,7 @@ Maintainer: Timothy W. Hilton <thilton@ucmerced.edu>
   exchange: Vegetation photosynthesis and respiration model (VPRM). Global
   Biogeochemical Cycles, 22, GB2005. doi:10.1029/2006GB002735.
 
-  To cite the R package 'VPRM', use:\cr
+  To cite the R package 'VPRMLandSfcModel', use:\cr
   Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.: Improving
   North American terrestrial CO2 flux diagnosis using spatial structure
   in land surface model residuals, Biogeosciences, 10, 4607-4625,

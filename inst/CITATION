@@ -1,8 +1,8 @@
-if(!exists("meta") || is.null(meta)) meta <- packageDescription("VPRM")
+if(!exists("meta") || is.null(meta)) meta <- packageDescription("VPRMLandSfcModel")
 year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
 vers <- paste("version", meta$Version)
 
-citHeader("To cite the R package 'VPRM' in publications use:")
+citHeader("To cite the R package 'VPRMLandSfcModel' in publications use:")
 
 citEntry(entry = "article",
   title        =  paste("Improving North American terrestrial CO2 flux",
@@ -55,5 +55,5 @@ citEntry(entry = "article",
 )
 
 citFooter("BibTeX entries for LaTeX users: use\n", 
-sQuote('toBibtex(citation("VPRM"))'))
+sQuote('toBibtex(citation("VPRMLandSfcModel"))'))
 

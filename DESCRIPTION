@@ -1,17 +1,18 @@
-Package: VPRM
+Package: VPRMLandSfcModel
 Type: Package
 Title: R implementation of VPRM
 Version: 1.1
 Date: 2013-12-18
 Author: Timothy W. Hilton
 Maintainer: Timothy W. Hilton <thilton@ucmerced.edu>
-Description: Provides an R implementation of the Vegetation Photosynthesis and
-    Respiration Model (VPRM).  VPRM is a simple light-use efficiency based
-    diagnostic land surface model.  VPRM diagnoses gross ecosystem exchange
-    (GEE) of carbon dioxide, ecosystem respiration (R), and net ecosystem
-    exchange (NEE) of carbon dioxide. To cite the VPRM R package or the
-    VPRM model itself in a publication, or for a more detailed description of
-    VPRM, use (within R) "citation("VPRM")".
+Description: Provides an R implementation of the Vegetation
+    Photosynthesis and Respiration Model (VPRM).  VPRM is a simple
+    diagnostic land surface model based on light-use efficiency.  VPRM
+    diagnoses gross ecosystem exchange (GEE) of carbon dioxide,
+    ecosystem respiration (R), and net ecosystem exchange (NEE) of
+    carbon dioxide. To cite the VPRMLandSfcModel R package or the VPRM
+    model itself in a publication, or for a more detailed description
+    of VPRM, see (within R) 'citation("VPRMLandSurfaceModel")'.
 License: GPL-3
 LazyLoad: yes
 Imports:

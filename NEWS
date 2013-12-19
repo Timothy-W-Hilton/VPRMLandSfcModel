@@ -2,3 +2,5 @@ New features in version 1.1
 
 - added Park_Falls dataset
 - added example code for all functions
+- changed package name from VPRMModel to VPRMLandSfcModel.  See
+  ChangeLog for reasoning.

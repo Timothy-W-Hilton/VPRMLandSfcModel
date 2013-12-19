@@ -2,7 +2,7 @@
 \name{Park_Falls}
 \alias{Park_Falls}
 \title{Park Falls, Wisconsin, USA eddy covariance data and MODIS data}
-\format{The dataset Park_Falls is a list containing four data frames:
+\format{The dataset Park_Falls contains four data frames:
 \describe{
 \item{PFa_evi}{timestamped MODIS EVI from NASA's Terra satellite (MODIS product MOD13Q1).}
 \item{PFa_refl}{timestamped MODIS surface reflectances in the red, blue, near infrared (NIR), and shortwave infrared (SWIR) bands (MODIS product MCD43A4).}

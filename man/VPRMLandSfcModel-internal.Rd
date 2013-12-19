@@ -1,4 +1,4 @@
-\name{VPRM-internal}
+\name{VPRMLandSfcModel-internal}
 \title{Internal VPRM objects}
 \alias{.required}
 \description{Internal VPRM objects.}
