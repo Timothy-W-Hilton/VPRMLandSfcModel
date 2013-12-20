@@ -235,11 +235,8 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##'                            date_EVI = PFa_evi[['date']],
 ##'                            EVI=PFa_evi[['evi']],
 ##'                            phen=NA)
-##' #all-sites--all-time VPRM parameters from Hilton et al (2013)
-##' lambda <- 0.06940179
-##' PAR_0 <- 1104.81
-##' alpha <- 0.04672012
-##' beta <- 0.5260401
+##' data(VPRM_parameters)
+##' attach(all_all_VPRM_parameters)
 ##' NEE <- vprm_calc_NEE(pfa_dd,
 ##'                      lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
 vprm_calc_NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
@@ -296,9 +293,8 @@ vprm_calc_NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0
 ##'                            date_EVI = PFa_evi[['date']],
 ##'                            EVI=PFa_evi[['evi']],
 ##'                            phen=NA)
-##' #all-sites--all-time VPRM parameters from Hilton et al (2013)
-##' lambda <- 0.06940179
-##' PAR_0 <- 1104.81
+##' data(VPRM_parameters)
+##' attach(all_all_VPRM_parameters)
 ##' GEE <- vprm_calc_GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0)
 vprm_calc_GEE <- function(driver_data, lambda=NULL, PAR_0=NULL) {
 
@@ -391,9 +387,9 @@ vprm_calc_GEE <- function(driver_data, lambda=NULL, PAR_0=NULL) {
 ##'                            date_EVI = PFa_evi[['date']],
 ##'                            EVI=PFa_evi[['evi']],
 ##'                            phen=NA)
-##' #all-sites--all-time VPRM parameters from Hilton et al (2013)
-##' alpha <- 0.04672012
-##' beta <- 0.5260401
+##' 
+##' data(VPRM_parameters)
+##' attach(all_all_VPRM_parameters)
 ##' ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
 vprm_calc_R <- function(driver_data, alpha=NULL, beta=NULL) {
 

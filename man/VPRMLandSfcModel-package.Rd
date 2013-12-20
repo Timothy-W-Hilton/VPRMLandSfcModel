@@ -16,8 +16,8 @@ respiration (R), and net ecosystem exchange (NEE) of carbon dioxide.
 \tabular{ll}{
 Package: \tab VPRMLandSfcModel\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2013-12-18\cr
+Version: \tab 1.1.1\cr
+Date: \tab 2013-12-20\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
@@ -32,7 +32,15 @@ The other functions provide methods to obtain the necessary driver data
 and to calculate some of the intermediate quantities that VPRM derives
 from remote sensing observations (e.g. land surface water index, Tscale,
 Pscale, etc.).
-}
+
+The package includes two datasets:
+\describe{
+  \item{Park_Falls}{contains ground-observed as well as satellite-observed driver data for VPRM from the Park Falls, Wisconsin, USA Ameriflux site.}
+  \item{VPRM_parameters}{contains values for VPRM parameters lambda,
+    PAR_0, alpha, and beta.  The parameter values were determined by
+    optimizing VPRM using 65 North American eddy covariance sites as
+    described in Hilton etal (2013).}}}
+
 \author{
 Timothy W. Hilton
 

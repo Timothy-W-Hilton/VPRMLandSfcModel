@@ -13,16 +13,20 @@
 ##' \item{PFa_phen}{timestamped MODIS phenology dynamics data (MODIS product MOD12Q2)}
 ##' \item{PFa_tower_obs}{timestamped air temperature (TA), net ecosystem exchange of carbon dioxide (FC), and photosynthetically active radiation (PAR) data.}
 ##' }
-##' @source The data in PFa_tower_obs are from the Park Falls, Wisconsin
-##' Ameriflux level II dataset (\url{ameriflux.lbl.gov}).  MODIS data are
-##' from the Ameriflux site MODIS snapshots provided by Oak Ridge
-##' National Laboratory (\url{http://daac.ornl.gov/MODIS/}).
+##' @source The data in PFa_tower_obs are from the Park Falls,
+##' Wisconsin Ameriflux level II dataset (\url{ameriflux.lbl.gov}).
+##' MODIS data are from the Ameriflux site MODIS snapshots provided by
+##' Oak Ridge National Laboratory (\url{http://daac.ornl.gov/MODIS/}).
 ##' @author Timothy W. Hilton
 ##' @seealso \code{\link{PFa_tower_obs}}, \code{\link{PFa_evi}},
 ##' \code{\link{PFa_refl}}, \code{\link{PFa_phen}}
 ##' @references MODIS snapshots: \url{http://daac.ornl.gov/MODIS/}
-##' @references The Park Falls, Wisconsin, USA Ameriflux site: \url{ameriflux.lbl.gov}, Berger et al (2000).
-##' @references Berger, Bradford W., Kenneth J. Davis, Chuixiang Yi, Peter S. Bakwin, Cong Long Zhao, 2001: Long-Term Carbon Dioxide Fluxes from a Very Tall Tower in a Northern Forest: Flux Measurement Methodology. J. Atmos. Oceanic Technol., 18, 529-542.
+##' @references The Park Falls, Wisconsin, USA Ameriflux site:
+##' \url{ameriflux.lbl.gov}, Berger et al (2000).
+##' @references Berger, Bradford W., Kenneth J. Davis, Chuixiang Yi,
+##' Peter S. Bakwin, Cong Long Zhao, 2001: Long-Term Carbon Dioxide
+##' Fluxes from a Very Tall Tower in a Northern Forest: Flux
+##' Measurement Methodology. J. Atmos. Oceanic Technol., 18, 529-542.
 ##' @examples
 ##' data(Park_Falls)
 ##' with( PFa_tower_obs, plot(date, TA,
@@ -133,3 +137,4 @@ NULL
 ##'         legend=c('red band', 'blue band'),
 ##'         col=c('red', 'blue'), lty=c('solid', 'dashed'), pch=c('o', '*'))
 NULL
+
