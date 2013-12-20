@@ -12,7 +12,7 @@
 \source{
   The data in PFa_tower_obs are from the Park Falls,
   Wisconsin Ameriflux level II dataset
-  (\url{ameriflux.lbl.gov}).  MODIS data are from the
+  (\url{ameriflux.lbl.gov}). MODIS data are from the
   Ameriflux site MODIS snapshots provided by Oak Ridge
   National Laboratory (\url{http://daac.ornl.gov/MODIS/}).
 }

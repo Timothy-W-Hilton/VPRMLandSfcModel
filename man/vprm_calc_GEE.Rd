@@ -54,9 +54,8 @@ pfa_dd <- VPRM_driver_data(name_long="Park Falls",
                            date_EVI = PFa_evi[['date']],
                            EVI=PFa_evi[['evi']],
                            phen=NA)
-#all-sites--all-time VPRM parameters from Hilton et al (2013)
-lambda <- 0.06940179
-PAR_0 <- 1104.81
+data(VPRM_parameters)
+attach(all_all_VPRM_parameters)
 GEE <- vprm_calc_GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0)
 }
 \author{

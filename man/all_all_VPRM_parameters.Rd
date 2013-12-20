@@ -1,0 +1,38 @@
+\docType{data}
+\name{all_all_VPRM_parameters}
+\alias{all_all_VPRM_parameters}
+\title{VPRM parameter set}
+\format{data frame containing values for the VPRM parameters
+lambda, PAR_0, alpha, and beta.}
+\source{
+  The parameter values were determined by optimizing to a
+  set of 65 North American eddy covariance sites as
+  described in Hilton et al (2013) section 2.3.
+}
+\description{
+  This is the all-sites--all-available-data parameter set
+  described in Hilton et al (2013) section 2.3.
+}
+\note{
+  all_all_VPRM_parameters is part of the
+  \code{\link{VPRM_parameters}} dataset
+}
+\examples{
+data(VPRM_parameters)
+print(all_all_VPRM_parameters)
+}
+\author{
+  Timothy W. Hilton
+}
+\references{
+  Hilton, T. W., Davis, K. J., Keller, K., and Urban, N.
+  M.: Improving North American terrestrial CO2 flux
+  diagnosis using spatial structure in land surface model
+  residuals, Biogeosciences, 10, 4607-4625,
+  doi:10.5194/bg-10-4607-2013, 2013.
+}
+\seealso{
+  \code{\link{VPRM_parameters}}
+}
+\keyword{datasets}
+

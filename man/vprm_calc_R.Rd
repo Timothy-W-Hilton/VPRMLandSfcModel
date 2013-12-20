@@ -61,9 +61,9 @@ pfa_dd <- VPRM_driver_data(name_long="Park Falls",
                            date_EVI = PFa_evi[['date']],
                            EVI=PFa_evi[['evi']],
                            phen=NA)
-#all-sites--all-time VPRM parameters from Hilton et al (2013)
-alpha <- 0.04672012
-beta <- 0.5260401
+
+data(VPRM_parameters)
+attach(all_all_VPRM_parameters)
 ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
 }
 \author{
