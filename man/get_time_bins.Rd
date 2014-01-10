@@ -1,0 +1,27 @@
+\name{get_time_bins}
+\alias{get_time_bins}
+\title{calculate temporal bin edges for VPRM parameter estimation.}
+\usage{
+  get_time_bins(data, window, t.start, t.end)
+}
+\arguments{
+  \item{data}{data frame; tower observations}
+
+  \item{window}{character string; currently one of "all" or
+  one of the "breaks" values accepted by cut.Date.}
+
+  \item{t.start}{chron; beginning of first temporal window}
+
+  \item{t.end}{chron; end of last temporal window}
+}
+\value{
+  factor; the temporal bin of each timestamp in data
+}
+\description{
+  calculate temporal bin edges for VPRM parameter
+  estimation.
+}
+\author{
+  Timothy W. Hilton
+}
+

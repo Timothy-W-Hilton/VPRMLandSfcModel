@@ -1,6 +1,15 @@
+Changes from version 1.1.1 to 1.2   9 Jan 2013
+	* added VPRM parameter estimation functionality.  Currently this
+	means that DEoptim package (differential evolution optimization)
+	is now required.  I may make this a "Suggests" package in the
+	future.
+	* (estimateVPRMPars.R) added optimization "windows" for VPRM
+	parameters lambda, PAR_0, alpha, and beta as optional parameters
+	to the functions estimate_VPRM_pars and optimizeVPRM_DE.
+
 Changes from version 1.1 to 1.1.1   20 Dec 2013
 	* added VPRM_parameters dataset and documentation
-	
+
 Changes from version 1.0 to 1.1   18 Dec 2013
 
 	* added Park_Falls dataset

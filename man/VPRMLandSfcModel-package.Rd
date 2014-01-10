@@ -7,26 +7,33 @@ R implementation of VPRM
 }
 \description{
 Provides an R implementation of the Vegetation Photosynthesis and
-Respiration Model (VPRM) of Mahadevan et al (2008).  VPRM is a simple
-diagnostic land surface model based on light-use efficiency.  VPRM
-diagnoses gross ecosystem exchange (GEE) of carbon dioxide, ecosystem
-respiration (R), and net ecosystem exchange (NEE) of carbon dioxide.
+Respiration Model (VPRM) of Mahadevan et al (2008) and tools to estimate
+VPRM parameter values from observations.  VPRM is a simple diagnostic
+land surface model based on light-use efficiency.  VPRM diagnoses gross
+ecosystem exchange (GEE) of carbon dioxide, ecosystem respiration (R),
+and net ecosystem exchange (NEE) of carbon dioxide.  VPRM parameters may
+be estimated separately for different subsets of a dataset of
+observations.  If the Rmpi package is installed, such separate
+parameter estimations may be run in parallel.
 }
 \details{
 \tabular{ll}{
 Package: \tab VPRMLandSfcModel\cr
 Type: \tab Package\cr
-Version: \tab 1.1.1\cr
-Date: \tab 2013-12-20\cr
+Version: \tab 1.2\cr
+Date: \tab 2014-01-09\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
 The literature in the references section provides a detailed description
 of VPRM.
 
-The top-level function is vprm_calc_NEE.  vprm_calc_NEE calculates net
-ecosystem exchange (NEE) according to the VPRM (Mahadevan et al (2008)
-eqn 12).
+The top-level function for running VPRM is vprm_calc_NEE.  vprm_calc_NEE
+calculates net ecosystem exchange (NEE) according to the VPRM (Mahadevan
+et al (2008) eqn 12).
+
+The top-level function for estimating VPRM parameters from observations
+is estimate_VPRM_pars.
 
 The other functions provide methods to obtain the necessary driver data
 and to calculate some of the intermediate quantities that VPRM derives

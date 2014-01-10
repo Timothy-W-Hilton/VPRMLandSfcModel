@@ -1,0 +1,27 @@
+\name{getSSE}
+\alias{getSSE}
+\title{calculate sum of squares}
+\usage{
+  getSSE(x)
+}
+\arguments{
+  \item{x}{values for which to calculate sum of squares}
+}
+\value{
+  sum of squares of x
+}
+\description{
+  calculates sum of squares of X.
+}
+\details{
+  if there are no valid data points, return an arbitrary
+  (and very high) SSE. This is a little bit of a hack - it
+  really ought to return NA in that situation, but it can"t
+  return NA, because the DEoptim implementation of DE
+  requires that the optimized function return a non-NA
+  scalar.
+}
+\author{
+  Timothy W. Hilton
+}
+

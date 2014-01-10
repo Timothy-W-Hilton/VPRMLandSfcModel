@@ -1,0 +1,32 @@
+\name{L}
+\alias{L}
+\title{cost function for VPRM parameterization}
+\usage{
+  L(par, driver_data)
+}
+\arguments{
+  \item{par}{four-element numeric vector containing lambda,
+  alpha, beta, PAR_0 (in that order)}
+
+  \item{driver_data}{May be a VPRM_driver_data object or a
+  data frame.  If a data frame, driver_data must contain
+  the variables Tscale, Pscale, Wscale, EVI, and PAR, and
+  NEE_obs.}
+}
+\value{
+  sum of squared errors for VPRM NEE residuals for the
+  specified parameters and NEE observations.
+}
+\description{
+  calculate sum of squared errors (SSE) for VPRM NEE, given
+  a set of VPRM parameters and a a set of NEE observations.
+}
+\details{
+  "L" abbreviations likelihood; currently SSE is a standin
+  for a statistically proper likelihood function for land
+  surface model residuals.
+}
+\author{
+  Timothy W. Hilton
+}
+

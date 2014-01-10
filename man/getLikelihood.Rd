@@ -1,0 +1,28 @@
+\name{getLikelihood}
+\alias{getLikelihood}
+\title{compute residual likelihood function}
+\usage{
+  getLikelihood(x, mu, sigma)
+}
+\arguments{
+  \item{x}{numeric, residual values}
+
+  \item{mu}{(check on this -- TWH)}
+
+  \item{sigma}{(check on this -- TWH)}
+}
+\value{
+  likelihood of residuals x
+}
+\description{
+  computes likelihood function for residuals in x uses eq
+  4.54 from
+}
+\author{
+  Timothy W. Hilton
+}
+\references{
+  Wilks, D.S. Statistical Methods in the Atmospheric
+  Sciences. 2nd edition, 2006.
+}
+
