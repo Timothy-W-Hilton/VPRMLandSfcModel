@@ -197,12 +197,12 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' frame.  If a data frame, driver_data must contain the variables
 ##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables
 ##' lambda, alpha, beta, and PAR_0 are optional (see 'details').
-##' @param lambda numeric, optional; VPRM parameter: maximum light use
+##' @param lambda_param numeric, optional; VPRM parameter: maximum light use
 ##' efficiency.  
-##' @param alpha numeric, optional; VPRM parameter (slope of respiration with
+##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration with
 ##' respect to temperature)
-##' @param beta numeric, optional; VPRM parameter (basal respiration rate)
-##' @param PAR_0 numeric, optional; VPRM parameter (LUE half-saturation value)
+##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
+##' @param PAR_0_param numeric, optional; VPRM parameter (LUE half-saturation value)
 ##' @return vector of same length as number of rows in driver_data containin
 ##' VPRM NEE [umol m-2 s-1]
 ##' @author Timothy W. Hilton
@@ -239,9 +239,9 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' attach(all_all_VPRM_parameters)
 ##' NEE <- vprm_calc_NEE(pfa_dd,
 ##'                      lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
-vprm_calc_NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0=NULL) {
-    GEE <- vprm_calc_GEE(driver_data, lambda, PAR_0)
-    R <- vprm_calc_R(driver_data, alpha, beta)
+vprm_calc_NEE <- function(driver_data, lambda_param=NULL, alpha_param=NULL, beta_param=NULL, PAR_0_param=NULL) {
+    GEE <- vprm_calc_GEE(driver_data, lambda_param, PAR_0_param)
+    R <- vprm_calc_R(driver_data, alpha_param, beta_param)
     NEE <- R - GEE
     return(NEE)
 }
@@ -262,9 +262,10 @@ vprm_calc_NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0
 ##' frame.  If a data frame, driver_data must contain the variables
 ##' Tscale, Pscale, Wscale, EVI, and PAR.  The variables
 ##' lambda, and PAR_0 are optional (see 'details').
-##' @param lambda numeric, optional; VPRM parameter: maximum light use
-##' efficiency.  
-##' @param PAR_0 numeric, optional; VPRM parameter (LUE half-saturation value)
+##' @param lambda_param numeric, optional; VPRM parameter: maximum
+##' light use efficiency.
+##' @param PAR_0_param numeric, optional; VPRM parameter (LUE
+##' half-saturation value)
 ##' @return vector of same length as number of rows in driver_data containin
 ##' VPRM GEE [umol m-2 s-1]
 ##' @author Timothy W. Hilton
@@ -296,33 +297,33 @@ vprm_calc_NEE <- function(driver_data, lambda=NULL, alpha=NULL, beta=NULL, PAR_0
 ##' data(VPRM_parameters)
 ##' attach(all_all_VPRM_parameters)
 ##' GEE <- vprm_calc_GEE(pfa_dd, lambda=lambda, PAR_0=PAR_0)
-vprm_calc_GEE <- function(driver_data, lambda=NULL, PAR_0=NULL) {
+vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 
     driver_data <- as.data.frame( driver_data )
 
     ## make sure VPRM parameters were specified as either function
     ## parameters or within driver_data
-    if (is.null(lambda)) {
+    if (is.null(lambda_param)) {
         if ('lambda' %in% names( driver_data ) ) {
-            lambda <- driver_data[['lambda']]
+            lambda_param <- driver_data[['lambda']]
         } else {
             stop('lambda is unspecified')
         }
     }
-    if (is.null(PAR_0)) {
+    if (is.null(PAR_0_param)) {
         if ('PAR_0' %in% names( driver_data ) ) {
-            PAR_0 <- driver_data[['PAR_0']]
+            PAR_0_param <- driver_data[['PAR_0']]
         } else {
             stop('PAR_0 is unspecified')
         }
     }
 
     ## calculate GEE according to Mahadevean et al (2008) eqn 9
-    GEE <- (lambda *
+    GEE <- (lambda_param *
             driver_data[, "Tscale"] *
             driver_data[, "Pscale"] *
             driver_data[, "Wscale"] *
-            (1 / (1 + (driver_data[, "PAR"]/PAR_0))) *
+            (1 / (1 + (driver_data[, "PAR"]/PAR_0_param))) *
             driver_data[, "EVI"] *
             driver_data[, "PAR"] )
 
@@ -391,28 +392,28 @@ vprm_calc_GEE <- function(driver_data, lambda=NULL, PAR_0=NULL) {
 ##' data(VPRM_parameters)
 ##' attach(all_all_VPRM_parameters)
 ##' ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
-vprm_calc_R <- function(driver_data, alpha=NULL, beta=NULL) {
+vprm_calc_R <- function(driver_data, alpha_param=NULL, beta_param=NULL) {
 
     driver_data <- as.data.frame( driver_data )
     
     ## make sure VPRM parameters were specified as either function
     ## parameters or within driver_data
-    if (is.null(alpha)) {
+    if (is.null(alpha_param)) {
         if ('alpha' %in% names( driver_data ) ) {
-            alpha <- driver_data[['alpha']]
+            alpha_param <- driver_data[['alpha']]
         } else {
             stop('alpha is unspecified')
         }
     }
-    if (is.null(beta)) {
+    if (is.null(beta_param)) {
         if ('beta' %in% names( driver_data ) ) {
-            beta <- driver_data[['beta']]
+            beta_param <- driver_data[['beta']]
         } else {
             stop('beta is unspecified')
         }
     }
 
-    R <- alpha * driver_data[, "Tresp"] + beta
+    R <- alpha_param * driver_data[, "Tresp"] + beta_param
 
     return(R)
 }

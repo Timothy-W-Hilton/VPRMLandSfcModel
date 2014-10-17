@@ -20,4 +20,5 @@ Imports:
     chron,
     DEoptim
 Suggests:
-    Rmpi
+    Rmpi,
+    testthat
