@@ -21,12 +21,3 @@ Imports:
     DEoptim
 Suggests:
     Rmpi
-Collate:
-    'EVI_to_phenology.R'
-    'VPRM_driver_data.R'
-    'interpMODIS.R'
-    'vprm.R'
-    'interp_phenology.R'
-    'Park_Falls.R'
-    'VPRM_parameters.R'
-    'estimateVPRMPars.R'
