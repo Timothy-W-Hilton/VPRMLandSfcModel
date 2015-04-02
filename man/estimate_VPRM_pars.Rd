@@ -3,22 +3,28 @@
 \alias{estimate_VPRM_pars}
 \title{estimate VPRM parameter values by minimizing SSE}
 \usage{
-estimate_VPRM_pars(all_data, opt_groups = NULL, DE_itermax, out_path,
-  par_set_str = "", run_parallel = FALSE, lambda_prior = c(0, 1.5),
-  alpha_prior = c(0, 1.5), beta_prior = c(-4, 4), PAR0_prior = c(0.1,
-  6000))
+estimate_VPRM_pars(all_data, opt_groups = NULL, DE_itermax,
+  out_path = getwd(), par_set_str = "", run_parallel = FALSE,
+  lambda_prior = c(0, 1.5), alpha_prior = c(0, 1.5), beta_prior = c(-4,
+  4), PAR0_prior = c(0.1, 6000))
 }
 \arguments{
-\item{all_data}{data frame;  VPRM input data}
+\item{all_data}{data frame; VPRM driver data to drive the
+parameter estimation.  Should usually be the 'data' field of a
+VPRM_driver_data object.}
 
 \item{opt_groups}{list of factors -- data will be split by the
 levels of opt_groups and each combination optimized separately.
-Groups containing less than six observations are ignored.}
+Groups containing less than six observations are ignored.  If
+unspecified parameters are estimated for all of all_data.}
 
-\item{DE_itermax}{integer, maximum differential evolution iterations}
+\item{DE_itermax}{integer, maximum differential evolution
+iterations (see DEoptim documentation).  Should be something like
+800 for a production run -- this will take some time for a typical
+data set.  Run with a small number (5 or so) for a debugging run.}
 
 \item{out_path}{character string; path to directory in which to
-save the estimated parameters}
+save the estimated parameters.  Default is the value of getwd()}
 
 \item{par_set_str}{character string; phrase to denote the
 parameterization being considered}
@@ -39,11 +45,41 @@ values for optimization.  Default is c(-4.0, 4.0).}
 values for optimization.  Default is c(0.1, 6000).}
 }
 \value{
-0 on success.
+0 on success.  A list of DEoptim objects (see DEoptim
+documentation), one for each unique combination of factors in
+opt_groups, is written to an RData file in the directory specified
+by out_path.  The file is named in the format
+ParEst_PAR_SET_STR.de.RData, where PAR_SET_STR is the value of the
+par_set_str argument to estimate_VPRM_pars.  The best fit
+parameter values are in a named vector in the
+[['optim']][['bestmem']] field of the DEoptim objects.  See
+DEoptim documentation for further interpretation of DEoptim
+objects.
 }
 \description{
-This is the main function for VPRM parameter estimation.  Attaches
-data frame containing VPRM input data for a single tower site
+This is the main function for VPRM parameter estimation.
+}
+\examples{
+data(Park_Falls)
+pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+                           name_short = "US-PFa",
+                           lat=45.9459,
+                           lon=-90.2723,
+                           PFT='MF',
+                           tower_date=PFa_tower_obs[['date']],
+                           NEE_obs=PFa_tower_obs[['FC']],
+                           T=PFa_tower_obs[['TA']],
+                           PAR=PFa_tower_obs[['PAR']],
+                           date_nir = PFa_refl[['date']],
+                           rho_nir=PFa_refl[['nir']],
+                           date_swir = PFa_refl[['date']],
+                           rho_swir = PFa_refl[['swir']],
+                           date_EVI = PFa_evi[['date']],
+                           EVI=PFa_evi[['evi']],
+                           phen=NA)
+par_est_status <- estimate_VPRM_pars(all_data=pfa_dd$data,
+                                     DE_itermax = 2,
+                                     par_set_str='ExampleRun')
 }
 \author{
 Timothy W. Hilton

@@ -3,8 +3,8 @@
 \alias{vprm_calc_NEE}
 \title{calculate VPRM NEE}
 \usage{
-vprm_calc_NEE(driver_data, lambda = NULL, alpha = NULL, beta = NULL,
-  PAR_0 = NULL)
+vprm_calc_NEE(driver_data, lambda_param = NULL, alpha_param = NULL,
+  beta_param = NULL, PAR_0_param = NULL)
 }
 \arguments{
 \item{driver_data}{May be a VPRM_driver_data object or a data
@@ -12,15 +12,15 @@ frame.  If a data frame, driver_data must contain the variables
 Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables
 lambda, alpha, beta, and PAR_0 are optional (see 'details').}
 
-\item{lambda}{numeric, optional; VPRM parameter: maximum light use
+\item{lambda_param}{numeric, optional; VPRM parameter: maximum light use
 efficiency.}
 
-\item{alpha}{numeric, optional; VPRM parameter (slope of respiration with
+\item{alpha_param}{numeric, optional; VPRM parameter (slope of respiration with
 respect to temperature)}
 
-\item{beta}{numeric, optional; VPRM parameter (basal respiration rate)}
+\item{beta_param}{numeric, optional; VPRM parameter (basal respiration rate)}
 
-\item{PAR_0}{numeric, optional; VPRM parameter (LUE half-saturation value)}
+\item{PAR_0_param}{numeric, optional; VPRM parameter (LUE half-saturation value)}
 }
 \value{
 vector of same length as number of rows in driver_data containin

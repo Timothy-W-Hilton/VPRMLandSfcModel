@@ -3,7 +3,7 @@
 \alias{vprm_calc_GEE}
 \title{calculate VPRM GEE}
 \usage{
-vprm_calc_GEE(driver_data, lambda = NULL, PAR_0 = NULL)
+vprm_calc_GEE(driver_data, lambda_param = NULL, PAR_0_param = NULL)
 }
 \arguments{
 \item{driver_data}{May be a VPRM_driver_data object or a data
@@ -11,10 +11,11 @@ frame.  If a data frame, driver_data must contain the variables
 Tscale, Pscale, Wscale, EVI, and PAR.  The variables
 lambda, and PAR_0 are optional (see 'details').}
 
-\item{lambda}{numeric, optional; VPRM parameter: maximum light use
-efficiency.}
+\item{lambda_param}{numeric, optional; VPRM parameter: maximum
+light use efficiency.}
 
-\item{PAR_0}{numeric, optional; VPRM parameter (LUE half-saturation value)}
+\item{PAR_0_param}{numeric, optional; VPRM parameter (LUE
+half-saturation value)}
 }
 \value{
 vector of same length as number of rows in driver_data containin

@@ -1,16 +1,19 @@
-##' This is the main function for VPRM parameter estimation.  Attaches
-##' data frame containing VPRM input data for a single tower site
-## calls optimize_VPRM_df to estimate VPRM parameters given that data frame
-## saves the estimated VPRM parameters as RData.
+##' This is the main function for VPRM parameter estimation.
 ##'
 ##' @title estimate VPRM parameter values by minimizing SSE
-##' @param all_data data frame;  VPRM input data
+##' @param all_data data frame; VPRM driver data to drive the
+##' parameter estimation.  Should usually be the 'data' field of a
+##' VPRM_driver_data object.
 ##' @param opt_groups list of factors -- data will be split by the
 ##' levels of opt_groups and each combination optimized separately.
-##' Groups containing less than six observations are ignored.
-##' @param DE_itermax integer, maximum differential evolution iterations
+##' Groups containing less than six observations are ignored.  If
+##' unspecified parameters are estimated for all of all_data.
+##' @param DE_itermax integer, maximum differential evolution
+##' iterations (see DEoptim documentation).  Should be something like
+##' 800 for a production run -- this will take some time for a typical
+##' data set.  Run with a small number (5 or so) for a debugging run.
 ##' @param out_path character string; path to directory in which to
-##' save the estimated parameters
+##' save the estimated parameters.  Default is the value of getwd()
 ##' @param par_set_str character string; phrase to denote the
 ##' parameterization being considered
 ##' @param run_parallel TRUE|{FALSE}; if true, use Rmpi to run
@@ -22,15 +25,49 @@
 ##' @param beta_prior  2-element vector; upper and lower beta
 ##' values for optimization.  Default is c(-4.0, 4.0).
 ##' @param PAR0_prior  2-element vector; upper and lower PAR_0
-##' values for optimization.  Default is c(0.1, 6000).  
-##' @return 0 on success.
+##' values for optimization.  Default is c(0.1, 6000).
+##' @return 0 on success.  A list of DEoptim objects (see DEoptim
+##' documentation), one for each unique combination of factors in
+##' opt_groups, is written to an RData file in the directory specified
+##' by out_path.  The file is named in the format
+##' ParEst_PAR_SET_STR.de.RData, where PAR_SET_STR is the value of the
+##' par_set_str argument to estimate_VPRM_pars.  The best fit
+##' parameter values are in a named vector in the
+##' [['optim']][['bestmem']] field of the DEoptim objects.  See
+##' DEoptim documentation for further interpretation of DEoptim
+##' objects.
 ##' @author Timothy W. Hilton
 ##' @import DEoptim
 ##' @export
-estimate_VPRM_pars <- function( all_data,
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' par_est_status <- estimate_VPRM_pars(all_data=pfa_dd$data,
+##'                                      DE_itermax = 2,
+##'                                      par_set_str='ExampleRun')
+
+
+
+
+estimate_VPRM_pars <- function(all_data,
                                opt_groups=NULL,
                                DE_itermax,
-                               out_path,
+                               out_path=getwd(),
                                par_set_str="",
                                run_parallel=FALSE,
                                lambda_prior=c(0.0, 1.5),
@@ -44,10 +81,10 @@ estimate_VPRM_pars <- function( all_data,
   } else {
     chunk_list <- list( all=all_data )
   }
-  
+
   cat("list elements for DE: ", length(chunk_list), "\n")
   cat("list names: ", names(chunk_list), "\n")
-  
+
   ctl <- DEoptim.control(itermax=DE_itermax, trace=TRUE)
 
   ## -----
@@ -95,7 +132,7 @@ estimate_VPRM_pars <- function( all_data,
   ## because ***apply was called on the names( chunk list ), the names
   ## of pars are now  names( names( chunklist ) ), which is empty.
   names( pars ) <- names( chunk_list )
-  
+
   ## save the estimated parameters
   if (!file.exists(out_path))
     dir.create(out_path, recursive=TRUE)
@@ -110,7 +147,7 @@ estimate_VPRM_pars <- function( all_data,
 ##============================================================
 
 ##==============================================================
-## 
+##
 ##' computes likelihood function for residuals in x uses eq 4.54 from
 ## Wilks, 1995 (eqn 4.22 in Wilks, 2006)
 ##'
@@ -201,7 +238,7 @@ getAbsWeightedErr <- function(x) {
 ##' @param beta_prior  2-element vector; upper and lower beta
 ##' values for optimization.  Default is c(-4.0, 4.0).
 ##' @param PAR0_prior  2-element vector; upper and lower PAR_0
-##' values for optimization.  Default is c(0.1, 6000).  
+##' values for optimization.  Default is c(0.1, 6000).
 ##' @return DEoptim object. DEoptim output for best VPRM parameter
 ##' estimate.
 ##' @import DEoptim
@@ -223,7 +260,7 @@ optimizeVPRM_DE <- function(driver_data,
     cat('alpha_prior: ', alpha_prior, '\n')
     cat('beta_prior: ', beta_prior, '\n')
     cat('PAR0_prior: ', PAR0_prior, '\n')
-    
+
                                         #-----
     lower <- c(lambda_prior[1], alpha_prior[1], beta_prior[1], PAR0_prior[1])
     upper <- c(lambda_prior[2], alpha_prior[2], beta_prior[2], PAR0_prior[2])
@@ -260,7 +297,7 @@ get_time_bins <- function(data, window, t.start, t.end) {
   if (is.numeric(window)) bin.edges <- as.Date(seq(t.start, t.end, by=window))
   else if (is.character(window)) bin.edges <- window  #window is a string
 
-  if (window == "all") 
+  if (window == "all")
     time.bins <- as.factor(rep("all", nrow(data)))
   else
     time.bins <- cut(as.Date(data$date), breaks=bin.edges)

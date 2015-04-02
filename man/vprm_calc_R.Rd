@@ -3,7 +3,7 @@
 \alias{vprm_calc_R}
 \title{calculate VPRM ecosystem respiration}
 \usage{
-vprm_calc_R(driver_data, alpha = NULL, beta = NULL)
+vprm_calc_R(driver_data, alpha_param = NULL, beta_param = NULL)
 }
 \arguments{
 \item{driver_data}{May be a VPRM_driver_data object or a data
@@ -11,10 +11,11 @@ frame.  If a data frame, driver_data must contain the variables
 Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables alpha
 and beta are optional (see 'details').}
 
-\item{alpha}{numeric, optional; VPRM parameter (slope of respiration with
-respect to temperature)}
+\item{alpha_param}{numeric, optional; VPRM parameter (slope of
+respiration with respect to temperature)}
 
-\item{beta}{numeric, optional; VPRM parameter (basal respiration rate)}
+\item{beta_param}{numeric, optional; VPRM parameter (basal
+respiration rate)}
 }
 \value{
 vector of same length as number of rows in driver_data containin

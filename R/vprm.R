@@ -18,7 +18,7 @@
 ##' @examples
 ##' data(Park_Falls)
 ##' Tscale <- getTscale( PFa_tower_obs[['TA']], Tmax=40, Tmin=0, Topt=20 )
-getTscale <- function (T, Tmax, Tmin, Topt) 
+getTscale <- function (T, Tmax, Tmin, Topt)
 {
   numer <- (T - Tmin) * (T - Tmax)
   denom <- ((T - Tmin) * (T - Tmax)) - (T - Topt)^2
@@ -77,7 +77,7 @@ getTscale <- function (T, Tmax, Tmin, Topt)
 ##' pfa_df <- as.data.frame( pfa_dd )
 ##' pscale <- getPscale( pfa_df[['LSWI']], pfa_df[['phen']] )
 getPscale <- function( LSWI, phen ) {
-  
+
   Pscale <- (1 + LSWI)/2
   Pscale[ phen == 'gmax' ] <- 1.0
   return( Pscale )
@@ -125,7 +125,7 @@ getWscale <- function(LSWI, LSWI_max) {
 
 ##' calculates land surface water index (LSWI) according to eqn 3 in
 ##' Mahadevan et al, 2007.
-##' 
+##'
 ##' LSWI may not exceed 1.0 and may take negative values (Xiao et al 2004)
 ##' @title calculate LSWI
 ##' @param rho_nir 1xN numeric vector; near-infrared (841-876 nm) band
@@ -198,7 +198,7 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables
 ##' lambda, alpha, beta, and PAR_0 are optional (see 'details').
 ##' @param lambda_param numeric, optional; VPRM parameter: maximum light use
-##' efficiency.  
+##' efficiency.
 ##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration with
 ##' respect to temperature)
 ##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
@@ -274,7 +274,7 @@ vprm_calc_NEE <- function(driver_data, lambda_param=NULL, alpha_param=NULL, beta
 ##' satellite-based biosphere parameterization for net ecosystem CO2
 ##' exchange: Vegetation Photosynthesis and Respiration Model
 ##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
-##' doi:10.1029/2006GB002735, 2008. 
+##' doi:10.1029/2006GB002735, 2008.
 ##' @export
 ##' @examples
 ##' data(Park_Falls)
@@ -353,9 +353,10 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 ##' frame.  If a data frame, driver_data must contain the variables
 ##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables alpha
 ##' and beta are optional (see 'details').
-##' @param alpha numeric, optional; VPRM parameter (slope of respiration with
-##' respect to temperature)
-##' @param beta numeric, optional; VPRM parameter (basal respiration rate)
+##' @param alpha_param numeric, optional; VPRM parameter (slope of
+##' respiration with respect to temperature)
+##' @param beta_param numeric, optional; VPRM parameter (basal
+##' respiration rate)
 ##' @return vector of same length as number of rows in driver_data containin
 ##' VPRM ecosystem respiration [umol m-2 s-1]
 ##' @author Timothy W. Hilton
@@ -388,14 +389,14 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 ##'                            date_EVI = PFa_evi[['date']],
 ##'                            EVI=PFa_evi[['evi']],
 ##'                            phen=NA)
-##' 
+##'
 ##' data(VPRM_parameters)
 ##' attach(all_all_VPRM_parameters)
 ##' ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
 vprm_calc_R <- function(driver_data, alpha_param=NULL, beta_param=NULL) {
 
     driver_data <- as.data.frame( driver_data )
-    
+
     ## make sure VPRM parameters were specified as either function
     ## parameters or within driver_data
     if (is.null(alpha_param)) {
