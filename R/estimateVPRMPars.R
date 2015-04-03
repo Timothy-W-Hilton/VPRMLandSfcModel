@@ -1,4 +1,10 @@
-##' This is the main function for VPRM parameter estimation.
+##' This is the main function for VPRM parameter estimation.  It
+##' optimizes VPRM parameters to a set of set of provided net
+##' ecosystem exchange (NEE) data by minimizing sum of squared errors
+##' (SSE) between VPRM and the provided NEE.  A joint optimization of
+##' all four VPRM parameters is performed using the differential
+##' evolution global optimization algorithm as implemented by the
+##' DEoptim package.
 ##'
 ##' @title estimate VPRM parameter values by minimizing SSE
 ##' @param all_data data frame; VPRM driver data to drive the
