@@ -1,6 +1,6 @@
 Package: VPRMLandSfcModel
 Type: Package
-Title: R implementation of VPRM
+Title: R implementation of VPRM with parameter estimation
 Version: 1.2
 Date: 2015-04-02
 Author: Timothy W. Hilton

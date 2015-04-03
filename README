@@ -1,6 +1,6 @@
 VPRMLandSfcModel-package   package:VPRMLandSfcModel    R Documentation
 
-R implementation of VPRM
+R implementation of VPRM with parameter estimation
 
 Description:
 
