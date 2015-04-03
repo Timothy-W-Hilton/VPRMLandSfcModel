@@ -77,9 +77,14 @@ pfa_dd <- VPRM_driver_data(name_long="Park Falls",
                            date_EVI = PFa_evi[['date']],
                            EVI=PFa_evi[['evi']],
                            phen=NA)
-par_est_status <- estimate_VPRM_pars(all_data=pfa_dd$data,
+par_est_status <- estimate_VPRM_pars(all_data=pfa_dd[['data']],
                                      DE_itermax = 2,
                                      par_set_str='ExampleRun')
+par_est_status <-
+    estimate_VPRM_pars(all_data=pfa_dd[['data']],
+                       DE_itermax = 2,
+                       par_set_str='ExampleRun_Monthly',
+                       opt_groups=months(pfa_dd[['data']][['date']]))
 }
 \author{
 Timothy W. Hilton
