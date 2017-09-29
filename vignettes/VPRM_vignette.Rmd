@@ -1,0 +1,191 @@
+---
+title: "VPRMLandSurfaceModel"
+author: "Timothy W. Hilton"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction to VPRMLandSfcModel.
+
+The VPRMLandSfcModel R package provides a pure R implementation of the
+Vegetation Photosynthesis and Respiration Model (VPRM)
+of [Mahadevan et al. (2008)](https://doi.org/10.1029/2006GB002735), along with tools for assembling VPRM
+driver data and estimating model parameter values.
+
+The following examples illustrate how to use the VPRMLandSfcModel R
+package.  The documentation for individual functions explains their
+purpose, output, and arguments in much more detail.
+
+## Usage Example: assembling VPRM driver data
+
+VPRMLandSfcModel can accept input data as either an R data frame or as
+an object of class VPRM_driver_data.  Using the included dataset
+`ParkFalls`, run the VPRM for the [Park Falls, Wisconsin, USA Ameriflux
+site](http://ameriflux.lbl.gov/sites/siteinfo/US-PFa):
+```{r, fig.show='hold'}
+library(VPRMLandSfcModel)
+data(Park_Falls)
+## determine the phenology phase for each tower observation date
+phen_filled <- interp_phenology(PFa_phen, PFa_tower_obs[['date']])
+## place the tower observations and MODIS data into a VPRM_driver_data object.
+pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+                           name_short = "US-PFa",
+                           lat=45.9459,
+                           lon=-90.2723,
+                           PFT='MF',    ## mixed forest
+                           tower_date=PFa_tower_obs[['date']],
+                           NEE_obs=PFa_tower_obs[['FC']],
+                           T=PFa_tower_obs[['TA']],
+                           PAR=PFa_tower_obs[['PAR']],
+                           date_nir = PFa_refl[['date']],
+                           rho_nir=PFa_refl[['nir']],
+                           date_swir = PFa_refl[['date']],
+                           rho_swir = PFa_refl[['swir']],
+                           date_EVI = PFa_evi[['date']],
+                           EVI=PFa_evi[['evi']],
+                           phen=phen_filled)
+## take a look at the result
+print(head(as.data.frame(pfa_dd)))
+```
+
+Now plot air temperature.  The [ggplot2](http://ggplot2.tidyverse.org) package is not necessary
+to install or use VPRMLandSfcModel, but it makes very pretty plots.
+
+```{r, fig.show='hold'}
+library(ggplot2)
+library(chron)
+##
+fig_T <- (ggplot(pfa_dd[['data']],
+              aes(date, T)) +
+        geom_line() +
+        scale_x_chron(format="%d %b %Y") +
+        labs(title = "US-PFa", y=expression(air~T~(degree*C))) +
+        theme_classic() +
+        theme(plot.title = element_text(hjust = 0.5)) +    # center the plot title
+		theme(axis.text=element_text(size=14),
+			axis.title=element_text(size=14,face="bold")))
+print(fig_T)
+```
+
+## Usage Example: calculating VPRM NEE
+
+Calculating VPRM fluxes requires values for the parameters lambda,
+PAR$_0$, alpha, and beta.  The dataset VPRM_parameters, part of the
+VPRMLandSfcModel package, includes several parameters sets.
+
+```{r, fig.show='hold'}
+data(VPRM_parameters)
+attach(all_all_VPRM_parameters)
+pfa_dd[['data']][['VPRM_NEE']] <- vprm_calc_NEE(
+    pfa_dd, lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
+
+fig_NEE_VPRM <- (ggplot(pfa_dd[['data']],
+	aes(date, VPRM_NEE)) +
+	geom_point() +
+	scale_x_chron(format="%d %b %Y") +
+	labs(title = "US-PFa", x='date', y=expression(VPRM~NEE~(mu*mol~m^{-2}~s^{-1}))) +
+	theme_classic() +
+	theme(plot.title = element_text(hjust = 0.5)) +    # center the plot title
+	theme(axis.text=element_text(size=14),
+		axis.title=element_text(size=14,face="bold")))
+print(fig_NEE_VPRM)
+
+## now plot the eddy covariance-observed NEE
+fig_NEE_EC <- (ggplot(pfa_dd[['data']],
+	aes(date, NEE_obs)) +
+	geom_point() +
+	scale_x_chron(format="%d %b %Y") +
+	labs(title = "US-PFa", x='date',
+		y=expression(eddy~covariance~NEE~(mu*mol~m^{-2}~s^{-1}))) +
+	theme_classic() +
+	theme(plot.title = element_text(hjust = 0.5)) +    # center the plot title
+	theme(axis.text=element_text(size=14),
+		axis.title=element_text(size=14,face="bold")))
+print(fig_NEE_EC)
+
+## now plot the difference between covariance-observed NEE and VPRM NEE
+fig_dNEE <- (ggplot(pfa_dd[['data']],
+	aes(date, NEE_obs-VPRM_NEE)) +
+	geom_point() +
+	scale_x_chron(format="%d %b %Y") +
+	labs(title = "US-PFa", x='date',
+		y=expression(Delta*NEE[obs-VPRM]~(mu*mol~m^{-2}~s^{-1}))) +
+	theme_classic() +
+	theme(plot.title = element_text(hjust = 0.5)) +    # center the plot title
+	theme(axis.text=element_text(size=14),
+		axis.title=element_text(size=14,face="bold")))
+print(fig_dNEE)
+```
+
+The difference between the eddy covariance NEE and the VPRM NEE
+illustrates that the all-all VPRM parameter set
+from [Hilton et al. (2013)](https://www.biogeosciences.net/10/4607/2013/) isn't the best choice (except for ease
+of use).  [Hilton et al (2014)](https://www.biogeosciences.net/11/217/2014/) discusses different spatial and
+temporal groupings of data for parameter estimation and concludes that
+grouping by plant functional types, perhaps in annual windows,
+minimizes model error among the options considered.
+
+# Usage Example: estimating VPRM parameters #
+
+The following code estimates two sets of parameter values for
+the [Park Falls, Wisconsin Ameriflux site](http://ameriflux.lbl.gov/sites/siteinfo/US-PFa) using the methodology
+described in [Hilton et al. (2013)](https://www.biogeosciences.net/10/4607/2013/).  The first set estimates
+values for the entire year. The second estimates monthly values,
+creating 12 sets of values for [lamba, PAR_0, alpha, beta].
+
+The examples below set DE_itermax to a very low value (2) so that the
+examples run quickly.  To obtain useful parameter estimates,
+DE_itermax must be set much larger.  500 to 1000 is usually a good
+starting point.
+
+```{r, fig.show='hold'}
+library(VPRMLandSfcModel)
+library(DEoptim)
+
+data(Park_Falls)
+pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+                           name_short = "US-PFa",
+                           lat=45.9459,
+                           lon=-90.2723,
+                           PFT='MF',
+                           tower_date=PFa_tower_obs[['date']],
+                           NEE_obs=PFa_tower_obs[['FC']],
+                           T=PFa_tower_obs[['TA']],
+                           PAR=PFa_tower_obs[['PAR']],
+                           date_nir = PFa_refl[['date']],
+                           rho_nir=PFa_refl[['nir']],
+                           date_swir = PFa_refl[['date']],
+                           rho_swir = PFa_refl[['swir']],
+                           date_EVI = PFa_evi[['date']],
+                           EVI=PFa_evi[['evi']],
+                           phen=NA)
+
+## estimate parameter values for all data
+par_est_status <- estimate_VPRM_pars(all_data=pfa_dd[['data']],
+                                     DE_itermax = 2,
+                                     par_set_str='ExampleRun')
+
+## estimate parameter values for monthly windows
+par_est_status <-
+    estimate_VPRM_pars(all_data=pfa_dd[['data']],
+                       DE_itermax = 2,
+                       par_set_str='ExampleRun_Monthly',
+                       opt_groups=months(pfa_dd[['data']][['date']]))
+```
+
+`estimate_VPRM_pars` writes the best-fit parameter values to an RData
+file in the working directory.  After the parameter estimation
+completes, load the RData file into the workspace to have a look.  The
+optimized parameters are a collection of objects of class DEoptim.
+See the documentation for the [DEoptim package](https://cran.r-project.org/package=DEoptim) for details.  The
+best-fit values are in the field optim$bestmem.
+
+```{r, fig.show='hold'}
+attach('ParEst_ExampleRun_Monthly.de.RData')
+ls(2)
+print(Apr[['optim']][['bestmem']])
+```

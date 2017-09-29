@@ -2,7 +2,7 @@ Package: VPRMLandSfcModel
 Type: Package
 Title: R implementation of VPRM with parameter estimation
 Version: 1.2
-Date: 2015-04-02
+Date: 2017-09-29
 Author: Timothy W. Hilton
 Maintainer: Timothy W. Hilton <thilton@ucmerced.edu>
 Description: Provides an R implementation of the Vegetation
@@ -21,3 +21,6 @@ Imports:
     DEoptim
 Suggests:
     Rmpi,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
