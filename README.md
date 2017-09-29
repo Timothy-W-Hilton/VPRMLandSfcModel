@@ -18,7 +18,7 @@ parameter estimations may be run in parallel.
 - Package:   VPRMLandSfcModel
 - Type:      Package
 - Version:   1.2
-- Date:      2015-04-02
+- Date:      2017-09-29
 - License:   GPL-3
 - LazyLoad:  yes
 
@@ -55,8 +55,13 @@ install_github('Timothy-W-Hilton/VPRMLandSfcModel')
 ```
 
 # Usage
+
+The vignette document 'VPRM_vignette', included with the package,
+provides several "getting started" usage examples.
+
 ```R
 library('VPRMLandSfcModel')
+RShowDoc('VPRM_vignette', package='VPRMLandSfcModel')
 ```
 
 # Author(s):
