@@ -144,7 +144,7 @@ starting point.
 
 ```{r, fig.show='hold'}
 library(VPRMLandSfcModel)
-library(DEoptim)
+library(chron)
 
 data(Park_Falls)
 pfa_dd <- VPRM_driver_data(name_long="Park Falls",
@@ -173,8 +173,10 @@ par_est_status <- estimate_VPRM_pars(all_data=pfa_dd[['data']],
 par_est_status <-
     estimate_VPRM_pars(all_data=pfa_dd[['data']],
                        DE_itermax = 2,
+					   out_path=,
                        par_set_str='ExampleRun_Monthly',
-                       opt_groups=months(pfa_dd[['data']][['date']]))
+                       opt_groups=list(months(pfa_dd[['data']][['date']]),
+                                       years(pfa_dd[['data']][['date']])))
 ```
 
 `estimate_VPRM_pars` writes the best-fit parameter values to an RData
@@ -183,9 +185,3 @@ completes, load the RData file into the workspace to have a look.  The
 optimized parameters are a collection of objects of class DEoptim.
 See the documentation for the [DEoptim package](https://cran.r-project.org/package=DEoptim) for details.  The
 best-fit values are in the field optim$bestmem.
-
-```{r, fig.show='hold'}
-attach('ParEst_ExampleRun_Monthly.de.RData')
-ls(2)
-print(Apr[['optim']][['bestmem']])
-```
