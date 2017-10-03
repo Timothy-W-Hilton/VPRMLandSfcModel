@@ -1,7 +1,16 @@
+New features in version 1.2.1
+- added vignette to provide usage examples
+
+New features in version 1.2
+- added VPRM parameter estimation functionality
+- (estimateVPRMPars.R) added optimization "windows" for VPRM
+   parameters lambda, PAR_0, alpha, and beta as optional parameters to
+   the functions estimate_VPRM_pars and optimizeVPRM_DE.
+
 New features in version 1.1.1
 - added VPRM_parameters dataset and documentation
 
-New features in version 1.1 
+New features in version 1.1
 
 - added Park_Falls dataset
 - added example code for all functions

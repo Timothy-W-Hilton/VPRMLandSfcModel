@@ -17,8 +17,8 @@ parameter estimations may be run in parallel.
 
 - Package:   VPRMLandSfcModel
 - Type:      Package
-- Version:   1.2
-- Date:      2017-09-29
+- Version:   1.2.1
+- Date:      2017-10-03
 - License:   GPL-3
 - LazyLoad:  yes
 
