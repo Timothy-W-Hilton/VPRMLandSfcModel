@@ -143,9 +143,9 @@ estimate_VPRM_pars <- function(all_data,
   ## save the estimated parameters
   if (!file.exists(out_path))
     dir.create(out_path, recursive=TRUE)
-  outfile <- file.path(out_path, paste("ParEst_", par_set_str, ".de.RData", sep=""))
-  discard <- with(pars, save(list=names(pars), file=outfile))
-  cat(paste("wrote", outfile, "\n"))
+  outfile <- file.path(out_path, paste("ParEst_", par_set_str, ".de.rds", sep=""))
+  discard <- saveRDS(pars, file=outfile)
+  cat(paste("writing", outfile, "\n"))
   return(0)
 }
 
