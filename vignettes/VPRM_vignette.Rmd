@@ -96,28 +96,28 @@ print(fig_NEE_VPRM)
 
 ## now plot the eddy covariance-observed NEE
 fig_NEE_EC <- (ggplot(pfa_dd[['data']],
-	aes(date, NEE_obs)) +
-	geom_point() +
-	scale_x_chron(format="%d %b %Y") +
-	labs(title = "US-PFa", x='date',
-		y=expression(eddy~covariance~NEE~(mu*mol~m^{-2}~s^{-1}))) +
-	theme_classic() +
-	theme(plot.title = element_text(hjust = 0.5)) +    # center the plot title
-	theme(axis.text=element_text(size=14),
-		axis.title=element_text(size=14,face="bold")))
+                      aes(date, NEE_obs)) +
+               geom_point() +
+               scale_x_chron(format="%d %b %Y") +
+               labs(title = "US-PFa", x='date',
+                    y=expression(eddy~covariance~NEE~(mu*mol~m^{-2}~s^{-1}))) +
+               theme_classic() +
+               theme(plot.title = element_text(hjust = 0.5)) + # center the plot title
+               theme(axis.text=element_text(size=14),
+                     axis.title=element_text(size=14,face="bold")))
 print(fig_NEE_EC)
 
 ## now plot the difference between covariance-observed NEE and VPRM NEE
 fig_dNEE <- (ggplot(pfa_dd[['data']],
-	aes(date, NEE_obs-VPRM_NEE)) +
-	geom_point() +
-	scale_x_chron(format="%d %b %Y") +
-	labs(title = "US-PFa", x='date',
-		y=expression(Delta*NEE[obs-VPRM]~(mu*mol~m^{-2}~s^{-1}))) +
-	theme_classic() +
-	theme(plot.title = element_text(hjust = 0.5)) +    # center the plot title
-	theme(axis.text=element_text(size=14),
-		axis.title=element_text(size=14,face="bold")))
+                    aes(date, NEE_obs-VPRM_NEE)) +
+             geom_point() +
+             scale_x_chron(format="%d %b %Y") +
+             labs(title = "US-PFa", x='date',
+                  y=expression(Delta*NEE[obs-VPRM]~(mu*mol~m^{-2}~s^{-1}))) +
+             theme_classic() +
+             theme(plot.title = element_text(hjust = 0.5)) +    # center the plot title
+             theme(axis.text=element_text(size=14),
+                   axis.title=element_text(size=14,face="bold")))
 print(fig_dNEE)
 ```
 
@@ -173,8 +173,7 @@ par_est_status <- estimate_VPRM_pars(all_data=pfa_dd[['data']],
 par_est_status <-
     estimate_VPRM_pars(all_data=pfa_dd[['data']],
                        DE_itermax = 2,
-					   out_path=,
-                       par_set_str='ExampleRun_Monthly',
+                       par_set_str='Example_PFa_Parameters_Monthly',
                        opt_groups=list(months(pfa_dd[['data']][['date']]),
                                        years(pfa_dd[['data']][['date']])))
 ```
@@ -182,6 +181,20 @@ par_est_status <-
 `estimate_VPRM_pars` writes the best-fit parameter values to an RData
 file in the working directory.  After the parameter estimation
 completes, load the RData file into the workspace to have a look.  The
-optimized parameters are a collection of objects of class DEoptim.
-See the documentation for the [DEoptim package](https://cran.r-project.org/package=DEoptim) for details.  The
-best-fit values are in the field optim$bestmem.
+optimized parameters are a list of objects of class DEoptim.  See the
+documentation for the [DEoptim package](https://cran.r-project.org/package=DEoptim) for details.  The best-fit
+values are in the field optim$bestmem.  VPRMLandSurfaceModel includes
+a dataset containing the output of the monthly parameter estimation in
+the above example.  See below for a usage example.
+
+# Usage Example: using previously estimated VPRM parameters #
+
+```{r, fig.show='hold'}
+library(VPRMLandSfcModel)
+## loads the parameter values from the above example
+data(Example_PFa_Parameters_Monthly)
+print(names(Example_PFa_Parameters_Monthly))
+print(Example_PFa_Parameters_Monthly[['Jul.2005']][['optim']][['bestmem']])
+
+
+```

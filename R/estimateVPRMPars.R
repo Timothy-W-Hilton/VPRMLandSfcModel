@@ -34,9 +34,9 @@
 ##' values for optimization.  Default is c(0.1, 6000).
 ##' @return 0 on success.  A list of DEoptim objects (see DEoptim
 ##' documentation), one for each unique combination of factors in
-##' opt_groups, is written to an RData file in the directory specified
+##' opt_groups, is written to an RDS file in the directory specified
 ##' by out_path.  The file is named in the format
-##' ParEst_PAR_SET_STR.de.RData, where PAR_SET_STR is the value of the
+##' ParEst_PAR_SET_STR.de.rds, where PAR_SET_STR is the value of the
 ##' par_set_str argument to estimate_VPRM_pars.  The best fit
 ##' parameter values are in a named vector in the
 ##' [['optim']][['bestmem']] field of the DEoptim objects.  See
