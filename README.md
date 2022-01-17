@@ -68,7 +68,7 @@ RShowDoc('VPRM_vignette', package='VPRMLandSfcModel')
 
 Timothy W. Hilton
 
-Maintainer: Timothy W. Hilton <twhilton@ucsc.edu>
+Maintainer: Timothy W. Hilton <t.hilton@gns.cri.nz>
 
 # References:
 
