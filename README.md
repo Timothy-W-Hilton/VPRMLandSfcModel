@@ -86,3 +86,5 @@ To cite the R package 'VPRMLandSfcModel', use:
 > Improving North American terrestrial CO2 flux diagnosis using
 > spatial structure in land surface model residuals, Biogeosciences,
 > 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013.
+
+Additionally, the code itself now has a DOI: [![DOI](https://zenodo.org/badge/33335415.svg)](https://zenodo.org/badge/latestdoi/33335415)
