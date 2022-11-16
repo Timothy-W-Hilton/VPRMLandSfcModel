@@ -5,7 +5,7 @@
 ##' @param Tmax maximum temp at which photosynthesis occurs (C)
 ##' @param Tmin minimum temp at which photosynthesis occurs (C)
 ##' @param Topt optimal temperature for photosynthesis (C)
-##' @return Tscale term in VPRM equation (eqn 12 in Mahadevan et al,
+##' @return Tscale term in VPRM equation (eqn 6 in Mahadevan et al,
 ##' 2007)
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
@@ -41,7 +41,7 @@ getTscale <- function (T, Tmax, Tmin, Topt)
 ##' @param LSWI 1xN numeric vector; land surface water index
 ##' @param phen 1xN factor vector; MODIS phenology (factor with levels
 ##' ginc, gmin, gmax, gdec)
-##' @return Pscale term in VPRM equation (eqn 12 in Mahadevan et al, 2008)
+##' @return Pscale term in VPRM equation (eqn 7 in Mahadevan et al, 2008)
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
@@ -89,7 +89,7 @@ getPscale <- function( LSWI, phen ) {
 ##' @title calculate Wscale
 ##' @param LSWI numeric vector; land surface water index
 ##' @param LSWI_max numeric; maximum LSWI for site (that is, a single value)
-##' @return Pscale term in VPRM equation (eqn 12 in Mahadevan et al, 2007)
+##' @return Wscale term in VPRM equation (eqn 8 in Mahadevan et al, 2007)
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
