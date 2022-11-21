@@ -331,8 +331,9 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 }
 
 
-##' calculates VPRM ecosystem respiration (R) according to eqn 10
-##' in Mahadevan et al, 2007
+##' calculates VPRM ecosystem respiration (R) according to either the VPRM
+##' formulation of Mahadevan et al. (2007) eqn 10 or the urbanVPRM
+##' formulation of Hardiman et al (2017) SI eqn 7 and SI eqn 8.
 ##'
 ##' Arguments alpha and beta may be omitted from the function call.
 ##' In this case they must be present as variables in data frame
@@ -344,32 +345,46 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 ##' length as the number of observations in driver_data.
 ##'
 ##' The Tresp variable in driver_data is the temperature used to calculate
-##' respiration.  Tresp should be max(Tair, Tlow), where Tair is the
-##' air temperature (deg C) and Tlow is the minimum air temperature
-##' (deg C) for respiration.  This is explained more fully in
-##' Mahadevan et al (2008) section 2.2.
+##' respiration. Tresp should be max(Tair, Tlow), where Tair is the air
+##' temperature (deg C) and Tlow is the minimum air temperature (deg C) for
+##' respiration. This is explained more fully in Mahadevan et al (2008) section
+##' 2.2.
+##'
+##' The urbanVPRM subdivides respiration into heterotrophic and autotrophic and
+##' introduces a scaling factor based on a nearby pixel of similar land cover
+##' with minimal impervious surface area. This scaling factor is derived from a
+##' "reference EVI" term, described in more detail in the supplemental material
+##' of Hardiman et al. (2017).
 ##' @title calculate VPRM ecosystem respiration
-##' @param driver_data May be a VPRM_driver_data object or a data
-##' frame.  If a data frame, driver_data must contain the variables
-##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables alpha
-##' and beta are optional (see 'details').
-##' @param alpha_param numeric, optional; VPRM parameter (slope of
-##' respiration with respect to temperature)
-##' @param beta_param numeric, optional; VPRM parameter (basal
-##' respiration rate)
+##' @param driver_data May be a VPRM_driver_data object or a data frame. If a
+##'   data frame, driver_data must contain the variables Tscale, Pscale, Wscale,
+##'   EVI, PAR, and Tresp. The variables alpha and beta are optional (see
+##'   'details').
+##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration
+##'   with respect to temperature)
+##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
 ##' @return vector of same length as number of rows in driver_data containin
-##' VPRM ecosystem respiration [umol m-2 s-1]
+##'   VPRM ecosystem respiration [umol m-2 s-1]
 ##' @author Timothy W. Hilton
-##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban,
-##' N. M.: Improving North American terrestrial CO2 flux diagnosis
-##' using spatial structure in land surface model residuals,
-##' Biogeosciences, 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013.
-##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
-##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
-##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respiration Model
-##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
-##' doi:10.1029/2006GB002735, 2008.
+##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.:
+##'   Improving North American terrestrial CO2 flux diagnosis using spatial
+##'   structure in land surface model residuals, Biogeosciences, 10, 4607-4625,
+##'   doi:10.5194/bg-10-4607-2013, 2013.
+##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn, A., Lin,
+##'   J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A satellite-based
+##'   biosphere parameterization for net ecosystem CO2 exchange: Vegetation
+##'   Photosynthesis and Respiration Model (VPRM), Global Biogeochem. Cy., 22,
+##'   GB2005, doi:10.1029/2006GB002735, 2008.
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
 ##' @export
 ##' @examples
 ##' data(Park_Falls)
@@ -393,28 +408,78 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 ##' data(VPRM_parameters)
 ##' attach(all_all_VPRM_parameters)
 ##' ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
-vprm_calc_R <- function(driver_data, alpha_param=NULL, beta_param=NULL) {
+vprm_calc_R <- function(driver_data,
+                        alpha_param=NULL,
+                        beta_param=NULL,
+                        model_form='Mahadevan07') {
 
-    driver_data <- as.data.frame( driver_data )
+  driver_data <- as.data.frame( driver_data )
 
-    ## make sure VPRM parameters were specified as either function
-    ## parameters or within driver_data
-    if (is.null(alpha_param)) {
-        if ('alpha' %in% names( driver_data ) ) {
-            alpha_param <- driver_data[['alpha']]
-        } else {
-            stop('alpha is unspecified')
-        }
+  ## make sure VPRM parameters were specified as either function
+  ## parameters or within driver_data
+  if (is.null(alpha_param)) {
+    if ('alpha' %in% names( driver_data ) ) {
+      alpha_param <- driver_data[['alpha']]
+    } else {
+      stop('alpha is unspecified')
     }
-    if (is.null(beta_param)) {
-        if ('beta' %in% names( driver_data ) ) {
-            beta_param <- driver_data[['beta']]
-        } else {
-            stop('beta is unspecified')
-        }
+  }
+  if (is.null(beta_param)) {
+    if ('beta' %in% names( driver_data ) ) {
+      beta_param <- driver_data[['beta']]
+    } else {
+      stop('beta is unspecified')
     }
+  }
+  # calculate R for Mahadevan et al 2007 VPRM formulation
+  R <- alpha_param * driver_data[, "Tresp"] + beta_param
 
-    R <- alpha_param * driver_data[, "Tresp"] + beta_param
+  if (model_form == 'urban') {
+    R <- urbanvprm_calc_R(R, driver_data, alpha_param, beta_param)
+  }
 
-    return(R)
+  return(R)
+}
+
+##' calculates urbanVPRM ecosystem respiration (R) according to Hardiman et al.
+##' (2017) SI eqn 7 and SI eqn 8 as described in SI section S2.4.
+##'
+##' .. content for \details{} ..
+##' @title calculate urbanVPRM ecosystem respiration
+##' @param Rinit numeric; the Rinit term, equal to the respiration for the
+##'   Mahadevan et al (2007) formulation.
+##' @inherit vprm_calc_R return author references params
+##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration
+##'   with respect to temperature)
+##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
+##' @return
+##' @author Timothy W. Hilton
+urbanvprm_calc_R <- function(Rinit, driver_data, alpha_param, beta_param) {
+
+  if (!('ISA' %in% names( driver_data ) )) {
+    stop('ISA is unspecified')
+  }
+
+  if (!('refEVI' %in% names( driver_data ) )) {
+    stop('reference EVI is unspecified')
+  }
+
+  ## heterotrophic respiration; Hardiman et al 2017 SI eqn 7
+  Rh <- ((1.0 - driver_data[['ISA']]) * Rinit) / 2.0
+
+  ## autotrophic respiration; Hardiman et al 2017 SI eqn 8
+  Ra <- (((driver_data[['EVI']] +
+          (min(driver_data[['refEVI']]) * driver_data[['ISA']])) /
+         driver_data[['refEVI']]) *
+         Rinit) / 2.0
+  ## Hardiman et al assume that autotrophic and heterotrophic respiration
+  ## contribute equally to ecosytem respiration (see SI section S2.4, first
+  ## paragraph).
+  return(Rh + Ra)
 }
