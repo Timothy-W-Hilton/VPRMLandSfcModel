@@ -458,7 +458,8 @@ vprm_calc_R <- function(driver_data,
 ##'   (2017). If set to "urban", the driver data must include variables ISA
 ##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
 ##'   EVI).
-##' @return
+##' @return vector of same length as number of rows in driver_data containin
+##'   urbanVPRM ecosystem respiration [umol m-2 s-1]
 ##' @author Timothy W. Hilton
 urbanvprm_calc_R <- function(Rinit, driver_data, alpha_param, beta_param) {
 
