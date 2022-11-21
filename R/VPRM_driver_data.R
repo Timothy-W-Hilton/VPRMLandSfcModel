@@ -106,9 +106,14 @@ VPRM_driver_data <- function( name_long="",
                         rho_swir=NA,
                         date_EVI,
                         EVI=NA,
+                        refEVI=NA,  # needed only for urbanVPRM
+                        ISA=NA,     # needed only for urbanVPRM
+                        LSWI=NA,    # if not specified will be calculated from rho_nir, rho_swir
                         ## phen should be a data frame with columns "date" and "phen"
                         phen=NA ) {
 
+## all the 'scalar' fields; that is, fields that are single values, not time
+## series
 obj <- list( name_long=name_long,
             name_short=name_short,
             lat=lat,
@@ -143,6 +148,9 @@ obj[['data']] <- data.frame( date=tower_date,
                        rho_nir=rho_nir,
                        rho_swir=rho_swir,
                        EVI=EVI,
+                       refEVI=refEVI,
+                       ISA=ISA,
+                       LSWI=LSWI,
                        phen=phen[['phen']] )
 
 class( obj ) <- c( 'VPRM_driver_data', class( obj ) )
@@ -167,25 +175,28 @@ return( obj )
 calculate_VPRM_derived_input_fields <- function( obj ) {
 
   ## make sure class of obj is correct
-  if ( !( 'VPRM_driver_data' %in% class( obj ) ) )
-    stop( 'obj must be a VPRM_driver_data object' )
-  
-  obj[['data']][['LSWI']] <- with( obj[['data']],  getLSWI( rho_nir,
-                                                           rho_swir ) )
-  obj[['data']][['Tscale']] <- getTscale( obj[['data']][['T']],
+  if (!('VPRM_driver_data' %in% class(obj)))
+    stop('obj must be a VPRM_driver_data object')
+
+
+  if (identical(all(is.na(obj[['data']][['LSWI']])), TRUE)) {
+    obj[['data']][['LSWI']] <- with(obj[['data']],
+                                    getLSWI(rho_nir, rho_swir))
+  }
+  obj[['data']][['Tscale']] <- getTscale(obj[['data']][['T']],
                                          obj[['Tmax']],
                                          obj[['Tmin']],
-                                         obj[['Topt']] )
-  if ( any( !is.na( obj[['data']][['phen']] ) ) ) {
+                                         obj[['Topt']])
+  if (any(!is.na(obj[['data']][['phen']]))) {
     ## for non-evergreen classes, derive Pscale from phenology
-    obj[['data']][['Pscale']] <- with( obj[['data']], getPscale( LSWI, phen ) )
+    obj[['data']][['Pscale']] <- with(obj[['data']], getPscale(LSWI, phen))
   } else {
     ## for evergreen classes, set Pscale to 1.0 (Mahadevan et al, 2008)
     obj[['data']][['Pscale']] <- 1.0
   }
   
-  obj[['data']][['Wscale']] <- with( obj[['data']],
-                                    getWscale( LSWI, max( LSWI, na.rm=TRUE ) ) )
+  obj[['data']][['Wscale']] <- with(obj[['data']],
+                                    getWscale(LSWI, max(LSWI, na.rm=TRUE)))
 
   Tresp <- obj[['data']][['T']]
   Tresp[ Tresp < obj[['Tlow']] ] <- obj[['Tlow']]
