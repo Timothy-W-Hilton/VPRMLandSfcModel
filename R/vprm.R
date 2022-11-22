@@ -76,13 +76,51 @@ getTscale <- function (T, Tmax, Tmin, Topt)
 ##'                            phen=NA)
 ##' pfa_df <- as.data.frame( pfa_dd )
 ##' pscale <- getPscale( pfa_df[['LSWI']], pfa_df[['phen']] )
-getPscale <- function( LSWI, phen ) {
+getPscale <- function(LSWI, phen) {
 
   Pscale <- (1 + LSWI)/2
   Pscale[ phen == 'gmax' ] <- 1.0
   return( Pscale )
 
 }
+
+##' calculates Pscale according to SI eqn 4 in Hardiman et al, 2017
+##'
+##' @title calculate Pscale for urbanVPRM
+##' @param EVI 1xN numeric vector; enhanced vegetation index
+##' @return Pscale term in urbanVPRM GEE equation (eqn SI eqn 4 in Hardiman et al, 2017)
+##' @author Timothy W. Hilton
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' pfa_df <- as.data.frame(pfa_dd)
+##' pscale <- getPscale_urban(pfa_df[['EVI']])
+getPscale_urban <- function(EVI) {
+  Pscale <- ((EVI - min(EVI, na.rm=TRUE)) /
+             (max(EVI, na.rm=TRUE) - EVI))
+  return(Pscale)
+}
+
 
 ##' calculates Wscale according to eqn 8 in Mahadevan et al, 2007
 ##'
