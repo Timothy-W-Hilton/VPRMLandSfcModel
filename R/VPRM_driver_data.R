@@ -215,7 +215,6 @@ calculate_VPRM_derived_input_fields <- function(obj) {
   return(obj)
 }
 
-
 ##' method for VPRM_driver_data
 ##'
 ##' The data field of the VPRM_driver_data object is kept.  Other
@@ -251,3 +250,21 @@ as.data.frame.VPRM_driver_data <- function(x, ...) {
   return(x[[ 'data' ]])
 }
 
+
+##' calculate photosynthetically available radiation (PAR) from incident
+##' downward shortwave radiation (SWDN)
+##'
+##' uses the mean result from Britton and Dodd (1976) table I. Averages the
+##' tables two values for Apr-May together, then averages all bimonthly
+##' averages.
+##' @title downward shortwave radiation to PAR
+##' @param SWDN numeric vector; downward shortwave radiation (W m-2)
+##' @return numeric vector containing PAR values (umol m-2 s-1)
+##' @author Timothy W. Hilton
+##' @references Britton, C. M. and Dodd, J. D., 1976. Relationships of
+##'   photosynthetically active radiation and shortwave irradiance. Agric.
+##'   Meteorol., 17: 1--7. https://doi.org/10.1016/0002-1571(76)90080-7
+##' @export
+SWDN_2_PAR <- function(SWDN) {
+  return(SWDN * 2.17305)
+}
