@@ -128,6 +128,7 @@ obj <- list(name_long=name_long,
             Tmin=Tmin,
             Tmax=Tmax,
             Topt=Topt,
+            Tlow=Tlow,
             model_form=model_form)
 
 ## interpolate reflectances and EVI onto tower timestamps
