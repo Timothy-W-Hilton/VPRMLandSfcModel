@@ -2,23 +2,23 @@
 
 # Description:
 
-Provides an R implementation of the Vegetation Photosynthesis and
-Respiration Model (VPRM) of Mahadevan et al (2008) and tools to
-estimate VPRM parameter values from observations.  VPRM is a
-simple diagnostic land surface model based on light-use
-efficiency.  VPRM diagnoses gross ecosystem exchange (GEE) of
-carbon dioxide, ecosystem respiration (R), and net ecosystem
-exchange (NEE) of carbon dioxide.  VPRM parameters may be
-estimated separately for different subsets of a dataset of
-observations.  If the Rmpi package is installed, such separate
-parameter estimations may be run in parallel.
+Provides an R implementation of the Vegetation Photosynthesis and Respiration
+Model (VPRM) of Mahadevan et al (2008), the urbanVPRM of Hardiman et al (2017),
+and tools to estimate VPRM parameter values from observations. VPRM is a simple
+diagnostic land surface model based on light-use efficiency. VPRM diagnoses
+gross ecosystem exchange (GEE) of carbon dioxide, ecosystem respiration (R), and
+net ecosystem exchange (NEE) of carbon dioxide. The urbanVPRM adapts the VPRM to
+urban settings by adjusting GEE and R to account for impervious surface area and
+the urban heat island effect. (urban)VPRM parameters may be estimated separately
+for different subsets of a dataset of observations. If the Rmpi package is
+installed, such separate parameter estimations may be run in parallel.
 
 # Details:
 
 - Package:   VPRMLandSfcModel
 - Type:      Package
-- Version:   1.2.1
-- Date:      2017-10-03
+- Version:   1.3.0
+- Date:      2023-07-07
 - License:   GPL-3
 - LazyLoad:  yes
 
@@ -80,6 +80,12 @@ itself, use:
 > ecosystem CO2 exchange: Vegetation photosynthesis and respiration
 > model (VPRM). Global Biogeochemical Cycles, 22, GB2005.
 > doi:10.1029/2006GB002735.
+
+To cite the urban Vegetation Photosynthesis Respiration Model (urbanVPRM) use
+> Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K., Getson, J. M., &
+> Friedl, M. A. (2017). Accounting for urban biogenic fluxes in regional carbon
+> budgets. Science of The Total Environment, 592, 366–372.
+> https://doi.org/https://doi.org/10.1016/j.scitotenv.2017.03.028
 
 To cite the R package 'VPRMLandSfcModel', use:
 > Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.:
