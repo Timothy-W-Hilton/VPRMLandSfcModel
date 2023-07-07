@@ -5,7 +5,7 @@
 ##' @param Tmax maximum temp at which photosynthesis occurs (C)
 ##' @param Tmin minimum temp at which photosynthesis occurs (C)
 ##' @param Topt optimal temperature for photosynthesis (C)
-##' @return Tscale term in VPRM equation (eqn 12 in Mahadevan et al,
+##' @return Tscale term in VPRM equation (eqn 6 in Mahadevan et al,
 ##' 2007)
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
@@ -41,7 +41,7 @@ getTscale <- function (T, Tmax, Tmin, Topt)
 ##' @param LSWI 1xN numeric vector; land surface water index
 ##' @param phen 1xN factor vector; MODIS phenology (factor with levels
 ##' ginc, gmin, gmax, gdec)
-##' @return Pscale term in VPRM equation (eqn 12 in Mahadevan et al, 2008)
+##' @return Pscale term in VPRM equation (eqn 7 in Mahadevan et al, 2008)
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
@@ -76,7 +76,7 @@ getTscale <- function (T, Tmax, Tmin, Topt)
 ##'                            phen=NA)
 ##' pfa_df <- as.data.frame( pfa_dd )
 ##' pscale <- getPscale( pfa_df[['LSWI']], pfa_df[['phen']] )
-getPscale <- function( LSWI, phen ) {
+getPscale <- function(LSWI, phen) {
 
   Pscale <- (1 + LSWI)/2
   Pscale[ phen == 'gmax' ] <- 1.0
@@ -84,12 +84,50 @@ getPscale <- function( LSWI, phen ) {
 
 }
 
+##' calculates Pscale according to SI eqn 4 in Hardiman et al, 2017
+##'
+##' @title calculate Pscale for urbanVPRM
+##' @param EVI 1xN numeric vector; enhanced vegetation index
+##' @return Pscale term in urbanVPRM GEE equation (eqn SI eqn 4 in Hardiman et al, 2017)
+##' @author Timothy W. Hilton
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
+##' @export
+##' @examples
+##' data(Park_Falls)
+##' pfa_dd <- VPRM_driver_data(name_long="Park Falls",
+##'                            name_short = "US-PFa",
+##'                            lat=45.9459,
+##'                            lon=-90.2723,
+##'                            PFT='MF',
+##'                            tower_date=PFa_tower_obs[['date']],
+##'                            NEE_obs=PFa_tower_obs[['FC']],
+##'                            T=PFa_tower_obs[['TA']],
+##'                            PAR=PFa_tower_obs[['PAR']],
+##'                            date_nir = PFa_refl[['date']],
+##'                            rho_nir=PFa_refl[['nir']],
+##'                            date_swir = PFa_refl[['date']],
+##'                            rho_swir = PFa_refl[['swir']],
+##'                            date_EVI = PFa_evi[['date']],
+##'                            EVI=PFa_evi[['evi']],
+##'                            phen=NA)
+##' pfa_df <- as.data.frame(pfa_dd)
+##' pscale <- getPscale_urban(pfa_df[['EVI']])
+getPscale_urban <- function(EVI) {
+  Pscale <- ((EVI - min(EVI, na.rm=TRUE)) /
+             (max(EVI, na.rm=TRUE) - EVI))
+  return(Pscale)
+}
+
+
 ##' calculates Wscale according to eqn 8 in Mahadevan et al, 2007
 ##'
 ##' @title calculate Wscale
 ##' @param LSWI numeric vector; land surface water index
 ##' @param LSWI_max numeric; maximum LSWI for site (that is, a single value)
-##' @return Pscale term in VPRM equation (eqn 12 in Mahadevan et al, 2007)
+##' @return Wscale term in VPRM equation (eqn 8 in Mahadevan et al, 2007)
 ##' @author Timothy W. Hilton
 ##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
 ##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
@@ -188,34 +226,44 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' same length as the number of observations in driver_data.
 ##'
 ##' The Tresp variable in driver_data is the temperature used to calculate
-##' respiration.  Tresp should be max(Tair, Tlow), where Tair is the
-##' air temperature (deg C) and Tlow is the minimum air temperature
-##' (deg C) for respiration.  This is explained more fully in
-##' Mahadevan et al (2008) section 2.2.
+##' respiration. Tresp should be max(Tair, Tlow), where Tair is the air
+##' temperature (deg C) and Tlow is the minimum air temperature (deg C) for
+##' respiration. This is explained more fully in Mahadevan et al (2008) section
+##' 2.2.
 ##' @title calculate VPRM NEE
-##' @param driver_data May be a VPRM_driver_data object or a data
-##' frame.  If a data frame, driver_data must contain the variables
-##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables
-##' lambda, alpha, beta, and PAR_0 are optional (see 'details').
+##' @param driver_data May be a VPRM_driver_data object or a data frame. If a
+##'   data frame, driver_data must contain the variables Tscale, Pscale, Wscale,
+##'   EVI, PAR, and Tresp. The variables lambda, alpha, beta, and PAR_0 are
+##'   optional (see 'details').
 ##' @param lambda_param numeric, optional; VPRM parameter: maximum light use
-##' efficiency.
-##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration with
-##' respect to temperature)
+##'   efficiency.
+##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration
+##'   with respect to temperature)
 ##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
-##' @param PAR_0_param numeric, optional; VPRM parameter (LUE half-saturation value)
+##' @param PAR_0_param numeric, optional; VPRM parameter (LUE half-saturation
+##'   value)
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
 ##' @return vector of same length as number of rows in driver_data containin
-##' VPRM NEE [umol m-2 s-1]
+##'   VPRM NEE [umol m-2 s-1]
 ##' @author Timothy W. Hilton
-##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban,
-##' N. M.: Improving North American terrestrial CO2 flux diagnosis
-##' using spatial structure in land surface model residuals,
-##' Biogeosciences, 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013.
-##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
-##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
-##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respiration Model
-##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
-##' doi:10.1029/2006GB002735, 2008.
+##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.:
+##'   Improving North American terrestrial CO2 flux diagnosis using spatial
+##'   structure in land surface model residuals, Biogeosciences, 10, 4607-4625,
+##'   doi:10.5194/bg-10-4607-2013, 2013.
+##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn, A., Lin,
+##'   J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A satellite-based
+##'   biosphere parameterization for net ecosystem CO2 exchange: Vegetation
+##'   Photosynthesis and Respiration Model (VPRM), Global Biogeochem. Cy., 22,
+##'   GB2005, doi:10.1029/2006GB002735, 2008.
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
 ##' @export
 ##' @examples
 ##' data(Park_Falls)
@@ -239,11 +287,17 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' attach(all_all_VPRM_parameters)
 ##' NEE <- vprm_calc_NEE(pfa_dd,
 ##'                      lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
-vprm_calc_NEE <- function(driver_data, lambda_param=NULL, alpha_param=NULL, beta_param=NULL, PAR_0_param=NULL) {
-    GEE <- vprm_calc_GEE(driver_data, lambda_param, PAR_0_param)
-    R <- vprm_calc_R(driver_data, alpha_param, beta_param)
-    NEE <- R - GEE
-    return(NEE)
+vprm_calc_NEE <- function(driver_data,
+                          lambda_param=NULL,
+                          alpha_param=NULL,
+                          beta_param=NULL,
+                          PAR_0_param=NULL,
+                          model_form='Mahadevan07') {
+  ## cat('calculating VPRM NEE using  ', model_form, 'formulation\n')
+  GEE <- vprm_calc_GEE(driver_data, lambda_param, PAR_0_param)
+  R <- vprm_calc_R(driver_data, alpha_param, beta_param, model_form=model_form)
+  NEE <- R - GEE
+  return(NEE)
 }
 
 ##' calculate VPRM GEE according to Mahadevan et al (2008) eq. 9
@@ -331,8 +385,9 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 }
 
 
-##' calculates VPRM ecosystem respiration (R) according to eqn 10
-##' in Mahadevan et al, 2007
+##' calculates VPRM ecosystem respiration (R) according to either the VPRM
+##' formulation of Mahadevan et al. (2007) eqn 10 or the urbanVPRM
+##' formulation of Hardiman et al (2017) SI eqn 7 and SI eqn 8.
 ##'
 ##' Arguments alpha and beta may be omitted from the function call.
 ##' In this case they must be present as variables in data frame
@@ -344,32 +399,46 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 ##' length as the number of observations in driver_data.
 ##'
 ##' The Tresp variable in driver_data is the temperature used to calculate
-##' respiration.  Tresp should be max(Tair, Tlow), where Tair is the
-##' air temperature (deg C) and Tlow is the minimum air temperature
-##' (deg C) for respiration.  This is explained more fully in
-##' Mahadevan et al (2008) section 2.2.
+##' respiration. Tresp should be max(Tair, Tlow), where Tair is the air
+##' temperature (deg C) and Tlow is the minimum air temperature (deg C) for
+##' respiration. This is explained more fully in Mahadevan et al (2008) section
+##' 2.2.
+##'
+##' The urbanVPRM subdivides respiration into heterotrophic and autotrophic and
+##' introduces a scaling factor based on a nearby pixel of similar land cover
+##' with minimal impervious surface area. This scaling factor is derived from a
+##' "reference EVI" term, described in more detail in the supplemental material
+##' of Hardiman et al. (2017).
 ##' @title calculate VPRM ecosystem respiration
-##' @param driver_data May be a VPRM_driver_data object or a data
-##' frame.  If a data frame, driver_data must contain the variables
-##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables alpha
-##' and beta are optional (see 'details').
-##' @param alpha_param numeric, optional; VPRM parameter (slope of
-##' respiration with respect to temperature)
-##' @param beta_param numeric, optional; VPRM parameter (basal
-##' respiration rate)
+##' @param driver_data May be a VPRM_driver_data object or a data frame. If a
+##'   data frame, driver_data must contain the variables Tscale, Pscale, Wscale,
+##'   EVI, PAR, and Tresp. The variables alpha and beta are optional (see
+##'   'details').
+##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration
+##'   with respect to temperature)
+##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
 ##' @return vector of same length as number of rows in driver_data containin
-##' VPRM ecosystem respiration [umol m-2 s-1]
+##'   VPRM ecosystem respiration [umol m-2 s-1]
 ##' @author Timothy W. Hilton
-##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban,
-##' N. M.: Improving North American terrestrial CO2 flux diagnosis
-##' using spatial structure in land surface model residuals,
-##' Biogeosciences, 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013.
-##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
-##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
-##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respiration Model
-##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
-##' doi:10.1029/2006GB002735, 2008.
+##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.:
+##'   Improving North American terrestrial CO2 flux diagnosis using spatial
+##'   structure in land surface model residuals, Biogeosciences, 10, 4607-4625,
+##'   doi:10.5194/bg-10-4607-2013, 2013.
+##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn, A., Lin,
+##'   J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A satellite-based
+##'   biosphere parameterization for net ecosystem CO2 exchange: Vegetation
+##'   Photosynthesis and Respiration Model (VPRM), Global Biogeochem. Cy., 22,
+##'   GB2005, doi:10.1029/2006GB002735, 2008.
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
 ##' @export
 ##' @examples
 ##' data(Park_Falls)
@@ -393,28 +462,79 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
 ##' data(VPRM_parameters)
 ##' attach(all_all_VPRM_parameters)
 ##' ER <- vprm_calc_R(pfa_dd, alpha=alpha, beta=beta)
-vprm_calc_R <- function(driver_data, alpha_param=NULL, beta_param=NULL) {
+vprm_calc_R <- function(driver_data,
+                        alpha_param=NULL,
+                        beta_param=NULL,
+                        model_form='Mahadevan07') {
 
-    driver_data <- as.data.frame( driver_data )
+  driver_data <- as.data.frame( driver_data )
 
-    ## make sure VPRM parameters were specified as either function
-    ## parameters or within driver_data
-    if (is.null(alpha_param)) {
-        if ('alpha' %in% names( driver_data ) ) {
-            alpha_param <- driver_data[['alpha']]
-        } else {
-            stop('alpha is unspecified')
-        }
+  ## make sure VPRM parameters were specified as either function
+  ## parameters or within driver_data
+  if (is.null(alpha_param)) {
+    if ('alpha' %in% names( driver_data ) ) {
+      alpha_param <- driver_data[['alpha']]
+    } else {
+      stop('alpha is unspecified')
     }
-    if (is.null(beta_param)) {
-        if ('beta' %in% names( driver_data ) ) {
-            beta_param <- driver_data[['beta']]
-        } else {
-            stop('beta is unspecified')
-        }
+  }
+  if (is.null(beta_param)) {
+    if ('beta' %in% names( driver_data ) ) {
+      beta_param <- driver_data[['beta']]
+    } else {
+      stop('beta is unspecified')
     }
+  }
+  # calculate R for Mahadevan et al 2007 VPRM formulation
+  R <- alpha_param * driver_data[, "Tresp"] + beta_param
 
-    R <- alpha_param * driver_data[, "Tresp"] + beta_param
+  if (model_form == 'urban') {
+    R <- urbanvprm_calc_R(R, driver_data, alpha_param, beta_param)
+  }
 
-    return(R)
+  return(R)
+}
+
+##' calculates urbanVPRM ecosystem respiration (R) according to Hardiman et al.
+##' (2017) SI eqn 7 and SI eqn 8 as described in SI section S2.4.
+##'
+##' .. content for \details{} ..
+##' @title calculate urbanVPRM ecosystem respiration
+##' @param Rinit numeric; the Rinit term, equal to the respiration for the
+##'   Mahadevan et al (2007) formulation.
+##' @inherit vprm_calc_R return author references params
+##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration
+##'   with respect to temperature)
+##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
+##' @return vector of same length as number of rows in driver_data containin
+##'   urbanVPRM ecosystem respiration [umol m-2 s-1]
+##' @author Timothy W. Hilton
+urbanvprm_calc_R <- function(Rinit, driver_data, alpha_param, beta_param) {
+
+  if (!('ISA' %in% names( driver_data ) )) {
+    stop('ISA is unspecified')
+  }
+
+  if (!('refEVI' %in% names( driver_data ) )) {
+    stop('reference EVI is unspecified')
+  }
+
+  ## heterotrophic respiration; Hardiman et al 2017 SI eqn 7
+  Rh <- ((1.0 - driver_data[['ISA']]) * Rinit) / 2.0
+
+  ## autotrophic respiration; Hardiman et al 2017 SI eqn 8
+  Ra <- (((driver_data[['EVI']] +
+          (min(driver_data[['refEVI']]) * driver_data[['ISA']])) /
+         driver_data[['refEVI']]) *
+         Rinit) / 2.0
+  ## Hardiman et al assume that autotrophic and heterotrophic respiration
+  ## contribute equally to ecosytem respiration (see SI section S2.4, first
+  ## paragraph).
+  return(Rh + Ra)
 }

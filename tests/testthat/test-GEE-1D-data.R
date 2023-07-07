@@ -21,7 +21,7 @@ test_that('vprm_calc_GEE works for site-level driver data', {
     ## need some parameters -- the choice is arbitrary, really
     load(file.path(system.file("data",
                                package="VPRMLandSfcModel"),
-                   'VPRM_parameters.Rdata'))
+                   'VPRM_parameters.RData'))
     ## attach(all_all_VPRM_parameters)
     ## NEE <- vprm_calc_NEE(pfa_dd,
     ##                      lambda_param=lambda,
