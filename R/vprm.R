@@ -226,34 +226,44 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' same length as the number of observations in driver_data.
 ##'
 ##' The Tresp variable in driver_data is the temperature used to calculate
-##' respiration.  Tresp should be max(Tair, Tlow), where Tair is the
-##' air temperature (deg C) and Tlow is the minimum air temperature
-##' (deg C) for respiration.  This is explained more fully in
-##' Mahadevan et al (2008) section 2.2.
+##' respiration. Tresp should be max(Tair, Tlow), where Tair is the air
+##' temperature (deg C) and Tlow is the minimum air temperature (deg C) for
+##' respiration. This is explained more fully in Mahadevan et al (2008) section
+##' 2.2.
 ##' @title calculate VPRM NEE
-##' @param driver_data May be a VPRM_driver_data object or a data
-##' frame.  If a data frame, driver_data must contain the variables
-##' Tscale, Pscale, Wscale, EVI, PAR, and Tresp.  The variables
-##' lambda, alpha, beta, and PAR_0 are optional (see 'details').
+##' @param driver_data May be a VPRM_driver_data object or a data frame. If a
+##'   data frame, driver_data must contain the variables Tscale, Pscale, Wscale,
+##'   EVI, PAR, and Tresp. The variables lambda, alpha, beta, and PAR_0 are
+##'   optional (see 'details').
 ##' @param lambda_param numeric, optional; VPRM parameter: maximum light use
-##' efficiency.
-##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration with
-##' respect to temperature)
+##'   efficiency.
+##' @param alpha_param numeric, optional; VPRM parameter (slope of respiration
+##'   with respect to temperature)
 ##' @param beta_param numeric, optional; VPRM parameter (basal respiration rate)
-##' @param PAR_0_param numeric, optional; VPRM parameter (LUE half-saturation value)
+##' @param PAR_0_param numeric, optional; VPRM parameter (LUE half-saturation
+##'   value)
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
 ##' @return vector of same length as number of rows in driver_data containin
-##' VPRM NEE [umol m-2 s-1]
+##'   VPRM NEE [umol m-2 s-1]
 ##' @author Timothy W. Hilton
-##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban,
-##' N. M.: Improving North American terrestrial CO2 flux diagnosis
-##' using spatial structure in land surface model residuals,
-##' Biogeosciences, 10, 4607-4625, doi:10.5194/bg-10-4607-2013, 2013.
-##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn,
-##' A., Lin, J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A
-##' satellite-based biosphere parameterization for net ecosystem CO2
-##' exchange: Vegetation Photosynthesis and Respiration Model
-##' (VPRM), Global Biogeochem. Cy., 22, GB2005,
-##' doi:10.1029/2006GB002735, 2008.
+##' @references Hilton, T. W., Davis, K. J., Keller, K., and Urban, N. M.:
+##'   Improving North American terrestrial CO2 flux diagnosis using spatial
+##'   structure in land surface model residuals, Biogeosciences, 10, 4607-4625,
+##'   doi:10.5194/bg-10-4607-2013, 2013.
+##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn, A., Lin,
+##'   J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A satellite-based
+##'   biosphere parameterization for net ecosystem CO2 exchange: Vegetation
+##'   Photosynthesis and Respiration Model (VPRM), Global Biogeochem. Cy., 22,
+##'   GB2005, doi:10.1029/2006GB002735, 2008.
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
 ##' @export
 ##' @examples
 ##' data(Park_Falls)
@@ -277,11 +287,17 @@ getLSWI <- function(rho_nir, rho_swir) {
 ##' attach(all_all_VPRM_parameters)
 ##' NEE <- vprm_calc_NEE(pfa_dd,
 ##'                      lambda=lambda, PAR_0=PAR_0, alpha=alpha, beta=beta)
-vprm_calc_NEE <- function(driver_data, lambda_param=NULL, alpha_param=NULL, beta_param=NULL, PAR_0_param=NULL) {
-    GEE <- vprm_calc_GEE(driver_data, lambda_param, PAR_0_param)
-    R <- vprm_calc_R(driver_data, alpha_param, beta_param)
-    NEE <- R - GEE
-    return(NEE)
+vprm_calc_NEE <- function(driver_data,
+                          lambda_param=NULL,
+                          alpha_param=NULL,
+                          beta_param=NULL,
+                          PAR_0_param=NULL,
+                          model_form='Mahadevan07') {
+  ## cat('calculating VPRM NEE using  ', model_form, 'formulation\n')
+  GEE <- vprm_calc_GEE(driver_data, lambda_param, PAR_0_param)
+  R <- vprm_calc_R(driver_data, alpha_param, beta_param, model_form=model_form)
+  NEE <- R - GEE
+  return(NEE)
 }
 
 ##' calculate VPRM GEE according to Mahadevan et al (2008) eq. 9

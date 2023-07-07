@@ -7,41 +7,46 @@
 ##' DEoptim package.
 ##'
 ##' @title estimate VPRM parameter values by minimizing SSE
-##' @param all_data data frame; VPRM driver data to drive the
-##' parameter estimation.  Should usually be the 'data' field of a
-##' VPRM_driver_data object.
-##' @param opt_groups list of factors -- data will be split by the
-##' levels of opt_groups and each combination optimized separately.
-##' Groups containing less than six observations are ignored.  If
-##' unspecified parameters are estimated for all of all_data.
-##' @param DE_itermax integer, maximum differential evolution
-##' iterations (see DEoptim documentation).  Should be something like
-##' 800 for a production run -- this will take some time for a typical
-##' data set.  Run with a small number (5 or so) for a debugging run.
-##' @param out_path character string; path to directory in which to
-##' save the estimated parameters.  Default is the value of getwd()
-##' @param par_set_str character string; phrase to denote the
-##' parameterization being considered
-##' @param run_parallel TRUE|{FALSE}; if true, use Rmpi to run
-##' optimization jobs in parallel
-##' @param lambda_prior 2-element vector; upper and lower lambda
-##' values for optimization.  Default is c(0.0, 1.5).
-##' @param alpha_prior  2-element vector; upper and lower alpha
-##' values for optimization.  Default is c(0.0, 1.5).
-##' @param beta_prior  2-element vector; upper and lower beta
-##' values for optimization.  Default is c(-4.0, 4.0).
-##' @param PAR0_prior  2-element vector; upper and lower PAR_0
-##' values for optimization.  Default is c(0.1, 6000).
-##' @return 0 on success.  A list of DEoptim objects (see DEoptim
-##' documentation), one for each unique combination of factors in
-##' opt_groups, is written to an RDS file in the directory specified
-##' by out_path.  The file is named in the format
-##' ParEst_PAR_SET_STR.de.rds, where PAR_SET_STR is the value of the
-##' par_set_str argument to estimate_VPRM_pars.  The best fit
-##' parameter values are in a named vector in the
-##' [['optim']][['bestmem']] field of the DEoptim objects.  See
-##' DEoptim documentation for further interpretation of DEoptim
-##' objects.
+##' @param all_data data frame; VPRM driver data to drive the parameter
+##'   estimation. Should usually be the 'data' field of a VPRM_driver_data
+##'   object.
+##' @param opt_groups list of factors -- data will be split by the levels of
+##'   opt_groups and each combination optimized separately. Groups containing
+##'   less than six observations are ignored. If unspecified parameters are
+##'   estimated for all of all_data.
+##' @param DE_itermax integer, maximum differential evolution iterations (see
+##'   DEoptim documentation). Should be something like 800 for a production run
+##'   -- this will take some time for a typical data set. Run with a small
+##'   number (5 or so) for a debugging run.
+##' @param out_path character string; path to directory in which to save the
+##'   estimated parameters. Default is the value of getwd()
+##' @param par_set_str character string; phrase to denote the parameterization
+##'   being considered
+##' @param run_parallel TRUE|{FALSE}; if true, use Rmpi to run optimization jobs
+##'   in parallel
+##' @param lambda_prior 2-element vector; upper and lower lambda values for
+##'   optimization. Default is c(0.0, 1.5).
+##' @param alpha_prior 2-element vector; upper and lower alpha values for
+##'   optimization. Default is c(0.0, 1.5).
+##' @param beta_prior 2-element vector; upper and lower beta values for
+##'   optimization. Default is c(-4.0, 4.0).
+##' @param PAR0_prior 2-element vector; upper and lower PAR_0 values for
+##'   optimization. Default is c(0.1, 6000).
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
+##' @return 0 on success. A list of DEoptim objects (see DEoptim documentation),
+##'   one for each unique combination of factors in opt_groups, is written to an
+##'   RDS file in the directory specified by out_path. The file is named in the
+##'   format ParEst_PAR_SET_STR.de.rds, where PAR_SET_STR is the value of the
+##'   par_set_str argument to estimate_VPRM_pars. The best fit parameter values
+##'   are in a named vector in the [['optim']][['bestmem']] field of the DEoptim
+##'   objects. See DEoptim documentation for further interpretation of DEoptim
+##'   objects.
+
 ##' @author Timothy W. Hilton
 ##' @import DEoptim
 ##' @export
@@ -80,7 +85,8 @@ estimate_VPRM_pars <- function(all_data,
                                lambda_prior=c(0.0, 1.5),
                                alpha_prior=c(0.0, 1.5),
                                beta_prior=c(-4.0, 4.0),
-                               PAR0_prior=c(0.1 , 6000)) {
+                               PAR0_prior=c(0.1 , 6000),
+                               model_form='Mahadevan07') {
 
   if ( !is.null( opt_groups ) ) {
     chunk_list <- split( all_data, f=opt_groups )
@@ -103,7 +109,8 @@ estimate_VPRM_pars <- function(all_data,
                     lambda_prior=lambda_prior,
                     alpha_prior=alpha_prior,
                     beta_prior=beta_prior,
-                    PAR0_prior=PAR0_prior) }
+                    PAR0_prior=PAR0_prior,
+                    model_form=model_form) }
   ## -----
 
   ## if parallel run is requested, check to see if Rmpi is installed.
@@ -216,12 +223,27 @@ getAbsWeightedErr <- function(x) {
 ##' @param driver_data May be a VPRM_driver_data object or a data
 ##' frame.  If a data frame, driver_data must contain the variables
 ##' Tscale, Pscale, Wscale, EVI, and PAR, and NEE_obs.
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
 ##' @return sum of squared errors for VPRM NEE residuals for the
 ##' specified parameters and NEE observations.
 ##' @author Timothy W. Hilton
-"L" <- function(par, driver_data) {
+##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn, A., Lin,
+##'   J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A satellite-based
+##'   biosphere parameterization for net ecosystem CO2 exchange: Vegetation
+##'   Photosynthesis and Respiration Model (VPRM), Global Biogeochem. Cy., 22,
+##'   GB2005, doi:10.1029/2006GB002735, 2008.
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
+"L" <- function(par, driver_data, model_form='Mahadevan07') {
     driver_data <- as.data.frame(driver_data)
-    NEE_vprm <- vprm_calc_NEE(driver_data, par[1], par[2], par[3], par[4])
+    NEE_vprm <- vprm_calc_NEE(driver_data, par[1], par[2], par[3], par[4], model_form)
     res <- driver_data[['NEE_obs']] - NEE_vprm
     return(getSSE(res))
 }
@@ -231,23 +253,37 @@ getAbsWeightedErr <- function(x) {
 ##' estimate_VPRM_pars.
 ##'
 ##' @title run DEoptim to estimate VPRM parameter values
-##' @param driver_data May be a VPRM_driver_data object or a data
-##' frame.  If a data frame, driver_data must contain the variables
-##' Tscale, Pscale, Wscale, EVI, and PAR, and NEE_obs.
+##' @param driver_data May be a VPRM_driver_data object or a data frame. If a
+##'   data frame, driver_data must contain the variables Tscale, Pscale, Wscale,
+##'   EVI, and PAR, and NEE_obs.
 ##' @param DEcontrol DEoptim.control object
 ##' @param refresh how many DE iterations in between progress writeouts
-##' @param msg character string; message to be displayed before DE is
-##' called.  Useful for log files.
-##' @param lambda_prior 2-element vector; upper and lower lambda
-##' values for optimization.  Default is c(0.0, 1.5).
-##' @param alpha_prior  2-element vector; upper and lower alpha
-##' values for optimization.  Default is c(0.0, 1.5).
-##' @param beta_prior  2-element vector; upper and lower beta
-##' values for optimization.  Default is c(-4.0, 4.0).
-##' @param PAR0_prior  2-element vector; upper and lower PAR_0
-##' values for optimization.  Default is c(0.1, 6000).
-##' @return DEoptim object. DEoptim output for best VPRM parameter
-##' estimate.
+##' @param msg character string; message to be displayed before DE is called.
+##'   Useful for log files.
+##' @param lambda_prior 2-element vector; upper and lower lambda values for
+##'   optimization. Default is c(0.0, 1.5).
+##' @param alpha_prior 2-element vector; upper and lower alpha values for
+##'   optimization. Default is c(0.0, 1.5).
+##' @param beta_prior 2-element vector; upper and lower beta values for
+##'   optimization. Default is c(-4.0, 4.0).
+##' @param PAR0_prior 2-element vector; upper and lower PAR_0 values for
+##'   optimization. Default is c(0.1, 6000).
+##' @param model_form string, optional; form of VPRM model to use. Options are
+##'   "Mahadevan07" (default) to use the VPRM formulation of Mahadevan et al.
+##'   (2007), or "urban" to use the urbanVPRM formulation of Hardiman et al.
+##'   (2017). If set to "urban", the driver data must include variables ISA
+##'   proportion (impervious surface area, 0.0 to 1.0) and refEVI (reference
+##'   EVI).
+##' @return DEoptim object. DEoptim output for best VPRM parameter estimate.
+##' @references Mahadevan, P., Wofsy, S., Matross, D., Xiao, X., Dunn, A., Lin,
+##'   J., Gerbig, C., Munger, J., Chow, V., and Gottlieb, E.: A satellite-based
+##'   biosphere parameterization for net ecosystem CO2 exchange: Vegetation
+##'   Photosynthesis and Respiration Model (VPRM), Global Biogeochem. Cy., 22,
+##'   GB2005, doi:10.1029/2006GB002735, 2008.
+##' @references Hardiman, B. S., Wang, J. A., Hutyra, L. R., Gately, C. K.,
+##'   Getson, J. M., & Friedl, M. A. (2017). Accounting for urban biogenic
+##'   fluxes in regional carbon budgets. Science of The Total Environment, 592,
+##'   366–372. https://doi.org/10.1016/j.scitotenv.2017.03.028
 ##' @import DEoptim
 ##' @export
 ##' @author Timothy W. Hilton
@@ -260,7 +296,8 @@ optimizeVPRM_DE <- function(driver_data,
                             lambda_prior=c(0.0, 1.5),
                             alpha_prior=c(0.0, 1.5),
                             beta_prior=c(-4.0, 4.0),
-                            PAR0_prior=c(0.1 , 6000)) {
+                            PAR0_prior=c(0.1 , 6000),
+                            model_form="Mahadevan07") {
 
     cat('within optimizeVPRM_DE:\n')
     cat('lambda_prior: ', lambda_prior, '\n')
@@ -281,7 +318,7 @@ optimizeVPRM_DE <- function(driver_data,
     ##-----
     ##find optimized parameters
 
-    r <- DEoptim(fn=L, lower=lower, upper=upper, control=DEcontrol, driver_data)
+    r <- DEoptim(fn=L, lower=lower, upper=upper, control=DEcontrol, driver_data, model_form)
 
     ##-----
     ##do some bookkeeping
