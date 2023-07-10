@@ -117,7 +117,14 @@ getPscale <- function(LSWI, phen) {
 ##' pscale <- getPscale_urban(pfa_df[['EVI']])
 getPscale_urban <- function(EVI) {
   Pscale <- ((EVI - min(EVI, na.rm=TRUE)) /
-             (max(EVI, na.rm=TRUE) - EVI))
+             (max(EVI, na.rm=TRUE) - min(EVI, na.rm=TRUE)))
+  ## use !is.finite() rather than is.infinite() because is.infinite() will not
+  ## flag NA or NaN
+  logger::log_info('setting Inf to NA in Pscale')
+  Pscale[!is.finite(Pscale)] <- NA
+  if (any(is.infinite(Pscale))) {
+    stop("Inf detected in Pscale")
+  }
   return(Pscale)
 }
 
@@ -380,7 +387,6 @@ vprm_calc_GEE <- function(driver_data, lambda_param=NULL, PAR_0_param=NULL) {
             (1 / (1 + (driver_data[, "PAR"]/PAR_0_param))) *
             driver_data[, "EVI"] *
             driver_data[, "PAR"] )
-
     return(GEE)
 }
 
