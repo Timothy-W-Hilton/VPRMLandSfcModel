@@ -493,7 +493,6 @@ vprm_calc_R <- function(driver_data,
   }
   # calculate R for Mahadevan et al 2007 VPRM formulation
   R <- alpha_param * driver_data[, "Tresp"] + beta_param
-
   if (model_form == 'urban') {
     R <- urbanvprm_calc_R(R, driver_data, alpha_param, beta_param)
   }
@@ -536,7 +535,7 @@ urbanvprm_calc_R <- function(Rinit, driver_data, alpha_param, beta_param) {
 
   ## autotrophic respiration; Hardiman et al 2017 SI eqn 8
   Ra <- (((driver_data[['EVI']] +
-          (min(driver_data[['refEVI']]) * driver_data[['ISA']])) /
+          (min(driver_data[['refEVI']], na.rm=TRUE) * driver_data[['ISA']])) /
          driver_data[['refEVI']]) *
          Rinit) / 2.0
   ## Hardiman et al assume that autotrophic and heterotrophic respiration
