@@ -1,3 +1,8 @@
+Version 1.3.1 - bugfix release
+- fix coding error in the urbanVPRM respiration calculation equation. v1.3.0
+  used (maxEVI - EVI); this should have been (maxEVI - minEVI).
+- fix Inf values in NEE calculation breaking parameter estimation.
+
 New features in version 1.3.0
 - implement the urbanVPRM adaptation of VPRM to urban settings
 
