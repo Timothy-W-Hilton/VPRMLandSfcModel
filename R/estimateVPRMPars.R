@@ -192,9 +192,10 @@ getLikelihood <- function(x, mu, sigma) {
 ##' @return sum of squares of x
 ##' @author Timothy W. Hilton
 getSSE <- function(x) {
-
-
-  if (length(which(!is.na(x))) == 0) return(1e20)
+  if (length(which(!is.na(x))) == 0) {
+    logger::log_warn('getSSE: no valid numeric input')
+    return(1e20)
+  }
   else return(sum( x^2, na.rm=TRUE))
 }
 
