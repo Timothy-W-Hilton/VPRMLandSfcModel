@@ -59,7 +59,6 @@ The vignette document 'VPRM_vignette', included with the package,
 provides several "getting started" usage examples.
 
 ```R
-library('VPRMLandSfcModel')
 RShowDoc('VPRM_vignette', package='VPRMLandSfcModel')
 ```
 
