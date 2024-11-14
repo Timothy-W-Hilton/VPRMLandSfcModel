@@ -50,8 +50,7 @@ The package includes two datasets:
 # Installation
 
 ```R
-library('devtools')
-install_github('Timothy-W-Hilton/VPRMLandSfcModel')
+devtools::install_github('Timothy-W-Hilton/VPRMLandSfcModel')
 ```
 
 # Usage
